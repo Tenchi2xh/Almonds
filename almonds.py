@@ -21,7 +21,7 @@ TODO:
   - Multi-threading
   - Hi-res capture (use resolution)
   - Open menu, looks for .params files
-  - Git + releases
+  - Github releases with bbfreeze + py2app
   - Adaptive palette
   - Alternative dithering strings
   - Julia ?
