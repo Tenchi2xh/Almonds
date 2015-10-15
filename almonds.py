@@ -12,6 +12,7 @@ import termbox
 from graphics import *
 from mandelbrot import *
 from logger import *
+from params import *
 
 __version__ = "1.0"
 
@@ -19,7 +20,6 @@ MENU_WIDTH = 40
 
 """
 TODO:
-  - Multi-threading
   - Hi-res capture (use resolution)
   - Open menu, looks for .params files
   - Github releases with bbfreeze + py2app
