@@ -20,8 +20,11 @@ Using PyPy will make the hi-res captures faster, but the terminal navigation slo
 
 ### Screenshots
 
-<img width="969" alt="screen shot 2015-10-15 at 11 45 05" src="https://cloud.githubusercontent.com/assets/4116708/10510459/742ef26e-7333-11e5-95a0-39eda364be65.png">
-<img width="1221" alt="screen shot 2015-10-15 at 11 48 43" src="https://cloud.githubusercontent.com/assets/4116708/10510460/743c1908-7333-11e5-8392-646f3c9b516f.png">
+<img width="1032" alt="screen shot 2015-10-15 at 21 12 23" src="https://cloud.githubusercontent.com/assets/4116708/10524783/9a51d0a8-7381-11e5-9847-d53ca0e74f6d.png">
+<img width="1550" alt="screen shot 2015-10-15 at 21 03 37" src="https://cloud.githubusercontent.com/assets/4116708/10524786/9d8526b2-7381-11e5-9d20-a376b3e7343c.png">
+![almonds_2015-10-15_21-03-40](https://cloud.githubusercontent.com/assets/4116708/10524793/a68abb82-7381-11e5-9bae-bd9768582c27.png)
+<img width="1004" alt="screen shot 2015-10-15 at 21 11 35" src="https://cloud.githubusercontent.com/assets/4116708/10524803/adc880e6-7381-11e5-9ef8-f6af71f67f0e.png">
+![almonds_2015-10-15_21-11-44](https://cloud.githubusercontent.com/assets/4116708/10524807/b2928018-7381-11e5-9120-d6af6efb839e.png)
 
 ### TODO
 
@@ -30,4 +33,4 @@ Using PyPy will make the hi-res captures faster, but the terminal navigation slo
 - GitHub releases (bbfreeze, Py2App)
 - Adaptive palette stretching
 - Julia mode
-- Update screenshots
+- Optimize
