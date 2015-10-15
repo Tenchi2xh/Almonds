@@ -27,3 +27,4 @@ On Windows, Almonds only works using [`mintty`](https://mintty.github.io/) ([`ba
 - GitHub releases (bbfreeze, Py2App)
 - Adaptive palette stretching
 - Julia mode
+- Update screenshots

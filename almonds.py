@@ -7,7 +7,6 @@ import textwrap
 import time
 import datetime
 import multiprocessing
-import Tkinter as tk
 import subprocess
 
 import termbox
@@ -17,6 +16,8 @@ from graphics import *
 from mandelbrot import *
 from logger import *
 from params import *
+from utils import *
+
 
 __version__ = "1.5b"
 
@@ -157,9 +158,7 @@ def save(params):
 
 def capture(t, params):
 
-    root = tk.Tk()
-    w, h = root.winfo_screenwidth(), root.winfo_screenheight()
-    root.destroy()
+    w, h = screen_resolution()
 
     # Re-adapt dimensions to match current ratio
     old_ratio = 1.0 * w / h
