@@ -18,7 +18,7 @@ def screen_resolution():
             # Mac OS X
             import AppKit
             size = AppKit.NSScreen.screens()[0].frame().size
-            w, h = int(size.width()), int(size.height())
+            w, h = int(size.width), int(size.height)
         except ImportError:
             try:
                 # Linux

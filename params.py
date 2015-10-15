@@ -20,6 +20,7 @@ class Params:
         self.dither_type = 0                    # Type of text characters used
         self.reverse_palette = False            # If true, palette is read backwards
         self.adaptive_palette = False           # TODO: palette min and max stretch to local slice's min and max
+        self.progress = 0
         # Infinite plane that stores results
         self.plane = Plane(log)
         self.plane_x0 = None                    # Plane coordinate of leftmost position on the displayed screen

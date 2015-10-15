@@ -19,7 +19,7 @@ from params import *
 from utils import *
 
 
-__version__ = "1.5b"
+__version__ = "1.6b"
 
 MENU_WIDTH = 40
 
@@ -175,14 +175,28 @@ def capture(t, params):
     if params.reverse_palette:
         palette = palette[::-1]
 
-    for x in xrange(w):
-        for y in xrange(h):
-            count = mandelbrot_capture(x, y, w, h, params)
-            pixels[x, y] = get_color(count, params.max_iterations, palette)
+    coords = [(x, y) for x in xrange(w) for y in xrange(h)]
+    threads = []
+    chunks = []
+    chunk_size = (w * h) / (2 * multiprocessing.cpu_count())
+    for i in xrange(0, len(coords), chunk_size):
+        chunks.append(coords[i:i + chunk_size])
 
-        if x % 50 == 0:
-            draw_progress_bar(t, "Capturing current scene...", x, w)
-            t.present()
+    n_threads = len(chunks)
+    lock = threading.Lock()
+    for i in xrange(n_threads):
+        threads.append(MBWorker(chunks[i], params, (w, h), t, lock))
+    for i in xrange(n_threads):
+        threads[i].start()
+    for i in xrange(n_threads):
+        threads[i].join()
+    for i in xrange(n_threads):
+        for j in xrange(len(threads[i].coords)):
+            c = threads[i].coords[j]
+            n = threads[i].results[j]
+            pixels[c[0], c[1]] = get_color(n, params.max_iterations, palette)
+
+    params.progress = 0
 
     if not os.path.exists("captures/"):
         os.makedirs("captures/")
@@ -191,6 +205,8 @@ def capture(t, params):
     filename = "captures/almonds_%s.png" % ts
     image.save(filename, "PNG")
     params.log("Current scene captured!")
+    if n_threads > 1:
+        params.log("(Used %d threads)" % n_threads)
 
     try:
         subprocess.call(["open", filename])
