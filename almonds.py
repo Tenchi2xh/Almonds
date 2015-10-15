@@ -18,14 +18,6 @@ __version__ = "1.3"
 
 MENU_WIDTH = 40
 
-"""
-TODO:
-  - Hi-res capture (use resolution)
-  - Open menu, looks for .params files
-  - Github releases with bbfreeze + py2app
-  - Adaptive palette
-  - Julia ?
-"""
 
 def draw_panel(t, params, log):
     """
