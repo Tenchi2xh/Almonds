@@ -113,6 +113,21 @@ def draw_box(t, x0, y0, w, h, fg=termbox.DEFAULT, bg=termbox.BLACK, h_seps=[], v
         t.change_cell(x0 + s, y0 + h, BOX_X_BOTTOM, fg, bg)
 
 
+def draw_progress_bar(t, message, value, max_value):
+    """
+    :type t: termbox.Termbox
+    """
+    m_x = t.width() / 2
+    m_y = t.height() / 2
+    w = len(message) + 4
+    h = 3
+    draw_box(t, m_x - w / 2, m_y - 1, w, h)
+    message = " %s " % message
+    i = int((float(value) / max_value) * (len(message) + 2))
+    message = "$" + message[:i] + "$" + message[i:]
+    draw_text(t, m_x - w / 2 + 1, m_y, message)
+
+
 def draw_text(t, x0, y0, string, fg=termbox.WHITE, bg=termbox.BLACK):
     markup_compensation = 0
     for i, c in enumerate(string):

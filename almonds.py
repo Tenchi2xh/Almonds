@@ -18,7 +18,7 @@ from mandelbrot import *
 from logger import *
 from params import *
 
-__version__ = "1.4b"
+__version__ = "1.5b"
 
 MENU_WIDTH = 40
 
@@ -155,7 +155,7 @@ def save(params):
     params.log("Current scene saved!")
 
 
-def capture(params):
+def capture(t, params):
 
     root = tk.Tk()
     w, h = root.winfo_screenwidth(), root.winfo_screenheight()
@@ -180,6 +180,10 @@ def capture(params):
         for y in xrange(h):
             count = mandelbrot_capture(x, y, w, h, params)
             pixels[x, y] = get_color(count, params.max_iterations, palette)
+
+        if x % 50 == 0:
+            draw_progress_bar(t, "Capturing current scene...", x, w)
+            t.present()
 
     if not os.path.exists("captures/"):
         os.makedirs("captures/")
@@ -272,7 +276,7 @@ def main():
                     elif ch == "s":
                         save(params)
                     elif ch == "h":
-                        capture(params)
+                        capture(t, params)
 
                 event = t.peek_event()
             if running:
