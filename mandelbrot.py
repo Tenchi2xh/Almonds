@@ -6,10 +6,6 @@ import threading
 from utils import clamp
 
 
-MB_CENTER_X = -0.5
-MB_CENTER_Y = 0.0
-
-
 class MBWorker(threading.Thread):
     def __init__(self, coords, params):
         self.coords = coords
@@ -34,8 +30,8 @@ def mandelbrot_iterate(z, c, max_iterations, iteration=0):
 def get_coords(x, y, params):
     n_x = x * 2.0 / params.plane_w * params.plane_ratio - 1.0
     n_y = y * 2.0 / params.plane_h - 1.0
-    mb_x = params.zoom * n_x + MB_CENTER_X
-    mb_y = params.zoom * n_y + MB_CENTER_Y
+    mb_x = params.zoom * n_x
+    mb_y = params.zoom * n_y
     return mb_x, mb_y
 
 
@@ -53,16 +49,22 @@ def mandelbrot(x, y, params):
 
 def mandelbrot_capture(x, y, w, h, params):
 
+    # FIXME: Figure out why these corrections are necessary
+    if params.plane_ratio >= 1.0:
+        x -= params.plane_w
+    else:
+        x += 3.0 * params.plane_w
+
     ratio = float(w) / h
     n_x = x * 2.0 / w * ratio - 1.0
     n_y = y * 2.0 / h - 1.0
-    mb_x = params.zoom * n_x + MB_CENTER_X + params.mb_cx
-    mb_y = params.zoom * n_y + MB_CENTER_Y + params.mb_cy
+    mb_x = params.zoom * n_x + params.mb_cx
+    mb_y = params.zoom * n_y + params.mb_cy
 
     mb = mandelbrot_iterate(0, mb_x + 1j * mb_y, params.max_iterations)
     z, iterations = mb
 
-    # Continuous iteration count
+    # Continuous iteration count for no banding
     nu = params.max_iterations
     if iterations < params.max_iterations:
         nu = iterations + 2 - abs(cmath.log(cmath.log(abs(z)) / cmath.log(params.max_iterations), 2))
@@ -74,8 +76,8 @@ def update_position(params):
     """
     :type params: Params
     """
-    cx = params.plane_cx + params.plane_w / 2
-    cy = params.plane_cy + params.plane_h / 2
+    cx = params.plane_cx + params.plane_w / 2.0
+    cy = params.plane_cy + params.plane_h / 2.0
     params.mb_cx, params.mb_cy = get_coords(cx, cy, params)
 
 
@@ -83,8 +85,8 @@ def zoom(params, factor):
 
     params.zoom /= factor
 
-    n_x = (params.mb_cx - MB_CENTER_X) / params.zoom
-    n_y = (params.mb_cy - MB_CENTER_Y) / params.zoom
+    n_x = params.mb_cx / params.zoom
+    n_y = params.mb_cy / params.zoom
 
     params.plane_cx = int((n_x + 1.0) * params.plane_w / (2.0 * params.plane_ratio)) - params.plane_w / 2
     params.plane_cy = int((n_y + 1.0) * params.plane_h / 2.0) - params.plane_h / 2

@@ -18,7 +18,7 @@ from mandelbrot import *
 from logger import *
 from params import *
 
-__version__ = "1.3"
+__version__ = "1.4"
 
 MENU_WIDTH = 40
 
@@ -160,6 +160,14 @@ def capture(params, log):
     root = tk.Tk()
     w, h = root.winfo_screenwidth(), root.winfo_screenheight()
     root.destroy()
+
+    # Re-adapt dimensions to match current ratio
+    old_ratio = 1.0 * w / h
+    new_ratio = params.plane_ratio
+    if old_ratio > new_ratio:
+        w = int(h * new_ratio)
+    else:
+        h = int(w / new_ratio)
 
     image = Image.new("RGB", (w, h), "white")
     pixels = image.load()
