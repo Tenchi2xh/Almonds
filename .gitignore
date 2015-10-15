@@ -1,0 +1,9 @@
+# IntelliJ
+.idea/
+*.iml
+
+# Python
+*.pyc
+
+# Project specific
+*.params
