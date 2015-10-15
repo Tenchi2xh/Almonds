@@ -76,8 +76,8 @@ def update_position(params):
     """
     :type params: Params
     """
-    cx = params.plane_cx + params.plane_w / 2.0
-    cy = params.plane_cy + params.plane_h / 2.0
+    cx = params.plane_x0 + params.plane_w / 2.0
+    cy = params.plane_y0 + params.plane_h / 2.0
     params.mb_cx, params.mb_cy = get_coords(cx, cy, params)
 
 
@@ -88,7 +88,7 @@ def zoom(params, factor):
     n_x = params.mb_cx / params.zoom
     n_y = params.mb_cy / params.zoom
 
-    params.plane_cx = int((n_x + 1.0) * params.plane_w / (2.0 * params.plane_ratio)) - params.plane_w / 2
-    params.plane_cy = int((n_y + 1.0) * params.plane_h / 2.0) - params.plane_h / 2
+    params.plane_x0 = int((n_x + 1.0) * params.plane_w / (2.0 * params.plane_ratio)) - params.plane_w / 2
+    params.plane_y0 = int((n_y + 1.0) * params.plane_h / 2.0) - params.plane_h / 2
 
     params.plane.reset()

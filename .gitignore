@@ -8,3 +8,5 @@
 # Project specific
 *.params
 *.png
+/saves
+/captures

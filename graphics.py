@@ -113,9 +113,14 @@ def draw_box(t, x0, y0, w, h, fg=termbox.DEFAULT, bg=termbox.BLACK, h_seps=[], v
         t.change_cell(x0 + s, y0 + h, BOX_X_BOTTOM, fg, bg)
 
 
-def draw_text(t, x0, y0, string, fg=termbox.DEFAULT, bg=termbox.BLACK):
+def draw_text(t, x0, y0, string, fg=termbox.WHITE, bg=termbox.BLACK):
+    markup_compensation = 0
     for i, c in enumerate(string):
-        t.change_cell(x0 + i, y0, ord(c), fg, bg)
+        if c == "$":
+            fg, bg = bg, fg
+            markup_compensation += 1
+            continue
+        t.change_cell(x0 + i - markup_compensation, y0, ord(c), fg, bg)
 
 
 def interpolate(c1, c2, factor):

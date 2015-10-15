@@ -18,12 +18,12 @@ from mandelbrot import *
 from logger import *
 from params import *
 
-__version__ = "1.4"
+__version__ = "1.4b"
 
 MENU_WIDTH = 40
 
 
-def draw_panel(t, params, log):
+def draw_panel(t, params):
     """
     Draws the application's main panel
     :type t: termbox.Termbox
@@ -45,8 +45,8 @@ def draw_panel(t, params, log):
     generated = 0
     missing_coords = []
 
-    xs = xrange(params.plane_cx, params.plane_cx + params.plane_w - 1)
-    ys = xrange(params.plane_cy, params.plane_cy + params.plane_h - 1)
+    xs = xrange(params.plane_x0, params.plane_x0 + params.plane_w - 1)
+    ys = xrange(params.plane_y0, params.plane_y0 + params.plane_h - 1)
     for x in xs:
         for y in ys:
             if params.plane[x, y] is None:
@@ -75,20 +75,20 @@ def draw_panel(t, params, log):
                 params.plane[c[0], c[1]] = threads[i].results[j]
 
     if generated > 0:
-        log("Added %d missing cells" % generated)
+        params.log("Added %d missing cells" % generated)
         if n_threads > 1:
-            log("(Used %d threads)" % n_threads)
+            params.log("(Used %d threads)" % n_threads)
 
     for x in xs:
         for y in ys:
-            draw_dithered_color(t, x - params.plane_cx + 1,
-                                   y - params.plane_cy + 1,
+            draw_dithered_color(t, x - params.plane_x0 + 1,
+                                   y - params.plane_y0 + 1,
                                    palette, params.dither_type,
                                    params.plane[x, y],
                                    params.max_iterations)
 
 
-def draw_menu(t, params, log):
+def draw_menu(t, params):
     """
     Draws the application's side menu
     :type t: termbox.Termbox
@@ -105,28 +105,28 @@ def draw_menu(t, params, log):
     stats.counter = 1
     draw_text(t, x0, 1, ("Almonds v.%s" % __version__).center(MENU_WIDTH - 2))
     # Write stats
-    stats("Real", params.mb_cx, u"[←], [→]")
-    stats("Imaginary", params.mb_cy, u"[↑], [↓]")
-    stats("Move speed", params.move_speed, "[C], [V]")
+    stats("Real", params.mb_cx, u"$[←]$, $[→]$")
+    stats("Imaginary", params.mb_cy, u"$[↑]$, $[↓]$")
+    stats("Move speed", params.move_speed, "$[C]$, $[V]$")
     stats.counter += 1
-    stats("Zoom", params.zoom, "[Z], [U]")
-    stats("Iterations", params.max_iterations, "[I], [O]")
+    stats("Zoom", params.zoom, "$[Z]$, $[U]$")
+    stats("Iterations", params.max_iterations, "$[I]$, $[O]$")
     stats.counter += 1
-    stats("Palette", PALETTES[params.palette][0], "[P]")
-    stats("Dither type", DITHER_TYPES[params.dither_type][0], "[D]")
-    stats("Order", "Reversed" if params.reverse_palette else "Normal", "[R]")
-    stats("Mode", "Adaptive" if params.adaptive_palette else "Linear", "[A]")
+    stats("Palette", PALETTES[params.palette][0], "$[P]$")
+    stats("Dither type", DITHER_TYPES[params.dither_type][0], "$[D]$")
+    stats("Order", "Reversed" if params.reverse_palette else "Normal", "$[R]$")
+    stats("Mode", "Adaptive" if params.adaptive_palette else "Linear", "$[A]$")
     stats.counter += 1
-    stats("Hi-res capture", "", "[H]")
-    stats("Save", "", "[S]")
-    stats("Exit", "", "[ESC]")
+    stats("Hi-res capture", "", "$[H]$")
+    stats("Save", "", "$[S]$")
+    stats("Exit", "", "$[ESC]$")
 
     middle = 3 + stats.counter
     draw_box(t, w - MENU_WIDTH, 0, MENU_WIDTH, h, h_seps=[2, 6, 9, 14, middle - 1, middle + 1])
 
     # Write log
     draw_text(t, x0, middle, "Event log".center(MENU_WIDTH - 2))
-    latest_logs = log.get_latest(h - middle)
+    latest_logs = params.log.get_latest(h - middle)
     latest_logs = map(lambda l: textwrap.wrap(l, MENU_WIDTH - 4)[::-1], latest_logs)  # Wrap all messages
     latest_logs = [l for ls in latest_logs for l in ls]                               # Flatten
     i = h - 2
@@ -137,25 +137,25 @@ def draw_menu(t, params, log):
             break
 
 
-def update_display(t, params, log):
+def update_display(t, params):
 
     t.clear()
-    draw_panel(t, params, log)
+    draw_panel(t, params)
     update_position(params)
-    draw_menu(t, params, log)
+    draw_menu(t, params)
     t.present()
 
 
-def save(params, log):
+def save(params):
     import cPickle
     ts = datetime.datetime.fromtimestamp(time.time()).strftime("%Y-%m-%d_%H-%M-%S")
     if not os.path.exists("saves/"):
         os.makedirs("saves/")
     cPickle.dump(params, open("saves/almonds_%s.params" % ts, "wb"))
-    log("Current scene saved!")
+    params.log("Current scene saved!")
 
 
-def capture(params, log):
+def capture(params):
 
     root = tk.Tk()
     w, h = root.winfo_screenwidth(), root.winfo_screenheight()
@@ -187,7 +187,7 @@ def capture(params, log):
     ts = datetime.datetime.fromtimestamp(time.time()).strftime("%Y-%m-%d_%H-%M-%S")
     filename = "captures/almonds_%s.png" % ts
     image.save(filename, "PNG")
-    log("Current scene captured!")
+    params.log("Current scene captured!")
 
     try:
         subprocess.call(["open", filename])
@@ -195,20 +195,32 @@ def capture(params, log):
         pass
 
 
+def init_coords(t, params):
+    w = t.width() - MENU_WIDTH - 1
+    h = t.height() - 1
+
+    params.plane_w = w
+    params.plane_h = h
+    params.resize(w, h)
+
+    zoom(params, 1)
+
+
 def main():
     begin = time.time()
     with termbox.Termbox() as t:
 
         log = Logger()
-        log("Welcome to Almonds v.%s" % __version__)
+        log("$Welcome to Almonds v.%s$" % __version__)
 
-        params = Params(1.0, 40, log)
+        params = Params(log)
         if len(sys.argv) == 2:
             import cPickle
             params = cPickle.load(open(sys.argv[1], "rb"))
             params.reload(log)
 
-        update_display(t, params, log)
+        init_coords(t, params)
+        update_display(t, params)
 
         running = True
         while running:
@@ -220,13 +232,13 @@ def main():
                 if kind == termbox.EVENT_KEY:
                     # Navigation
                     if key == termbox.KEY_ARROW_UP:
-                        params.plane_cy -= 1 * params.move_speed
+                        params.plane_y0 -= 1 * params.move_speed
                     elif key == termbox.KEY_ARROW_DOWN:
-                        params.plane_cy += 1 * params.move_speed
+                        params.plane_y0 += 1 * params.move_speed
                     elif key == termbox.KEY_ARROW_LEFT:
-                        params.plane_cx -= 2 * params.move_speed
+                        params.plane_x0 -= 2 * params.move_speed
                     elif key == termbox.KEY_ARROW_RIGHT:
-                        params.plane_cx += 2 * params.move_speed
+                        params.plane_x0 += 2 * params.move_speed
                     # Move speed
                     if ch == "c":
                         params.move_speed += 1
@@ -258,13 +270,13 @@ def main():
                         params.reverse_palette = not params.reverse_palette
                     # Misc
                     elif ch == "s":
-                        save(params, log)
+                        save(params)
                     elif ch == "h":
-                        capture(params, log)
+                        capture(params)
 
                 event = t.peek_event()
             if running:
-                update_display(t, params, log)
+                update_display(t, params)
 
     spent = (time.time() - begin) / 60
     print "\nSpent %d minutes exploring fractals, see you soon :)\n" % spent
