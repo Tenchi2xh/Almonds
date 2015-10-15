@@ -47,6 +47,21 @@ def mandelbrot(x, y, params):
     mb = mandelbrot_iterate(0, mb_x + 1j * mb_y, params.max_iterations)
 
     z, iterations = mb
+
+    return iterations
+
+
+def mandelbrot_capture(x, y, w, h, params):
+
+    ratio = float(w) / h
+    n_x = x * 2.0 / w * ratio - 1.0
+    n_y = y * 2.0 / h - 1.0
+    mb_x = params.zoom * n_x + MB_CENTER_X + params.mb_cx
+    mb_y = params.zoom * n_y + MB_CENTER_Y + params.mb_cy
+
+    mb = mandelbrot_iterate(0, mb_x + 1j * mb_y, params.max_iterations)
+    z, iterations = mb
+
     # Continuous iteration count
     nu = params.max_iterations
     if iterations < params.max_iterations:

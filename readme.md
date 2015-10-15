@@ -6,7 +6,7 @@ Terminal Mandelbrot fractal viewer, using [`termbox`](https://github.com/nsf/ter
 
 ### Requisites
 
-You will need to install `termbox` and run:
+You will need to install `termbox`, `PIL` (or `Pillow`), then run:
 
 ```
 $ python almonds.py
@@ -21,7 +21,8 @@ On Windows, Almonds only works using [`mintty`](https://mintty.github.io/) ([`ba
 
 ### TODO
 
-- Hi-res capture (uses screen resolution, add progress bar)
+- Add progress bar for capture
+- Fix capture zoom
 - Open menu, displays saved .params files
 - GitHub releases (bbfreeze, Py2App)
 - Adaptive palette stretching

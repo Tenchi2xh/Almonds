@@ -42,6 +42,17 @@ PALETTES = [("Moonlight", PALETTE_1),
             ("Neon", PALETTE_5),
             ("Hello Kitty", PALETTE_6)]
 
+# Colors
+
+COLORS = {termbox.BLACK:   (  0,   0,   0),
+          termbox.RED:     (255,   0,   0),
+          termbox.GREEN:   (  0, 255,   0),
+          termbox.BLUE:    (  0,   0, 255),
+          termbox.YELLOW:  (255, 255,   0),
+          termbox.MAGENTA: (255,   0, 255),
+          termbox.CYAN:    (0,   255, 255),
+          termbox.WHITE:   (255, 255, 255)}
+
 
 def dither_symbol(value, dither):
     """
@@ -105,3 +116,16 @@ def draw_box(t, x0, y0, w, h, fg=termbox.DEFAULT, bg=termbox.BLACK, h_seps=[], v
 def draw_text(t, x0, y0, string, fg=termbox.DEFAULT, bg=termbox.BLACK):
     for i, c in enumerate(string):
         t.change_cell(x0 + i, y0, ord(c), fg, bg)
+
+
+def interpolate(c1, c2, factor):
+    return (int(c1[0] * (1 - factor) + c2[0] * factor),
+            int(c1[1] * (1 - factor) + c2[1] * factor),
+            int(c1[2] * (1 - factor) + c2[2] * factor))
+
+
+def get_color(count, max_iterations, palette):
+    i = count * (len(palette) - 1.0) / max_iterations
+    c1 = COLORS[palette[int(math.floor(i))]]
+    c2 = COLORS[palette[int(math.ceil(i))]]
+    return interpolate(c1, c2, i - int(math.floor(i)))

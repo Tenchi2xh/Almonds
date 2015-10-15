@@ -1,13 +1,17 @@
 #!/usr/bin/python
 # -*- encoding: utf-8 -*-
 
+import os
 import sys
 import textwrap
 import time
 import datetime
 import multiprocessing
+import Tkinter as tk
+import subprocess
 
 import termbox
+from PIL import Image
 
 from graphics import *
 from mandelbrot import *
@@ -113,12 +117,12 @@ def draw_menu(t, params, log):
     stats("Order", "Reversed" if params.reverse_palette else "Normal", "[R]")
     stats("Mode", "Adaptive" if params.adaptive_palette else "Linear", "[A]")
     stats.counter += 1
-    stats("Hi-res capture", "", "[C]")
+    stats("Hi-res capture", "", "[H]")
     stats("Save", "", "[S]")
     stats("Exit", "", "[ESC]")
 
     middle = 3 + stats.counter
-    draw_box(t, w - MENU_WIDTH, 0, MENU_WIDTH, h, h_seps=[2, 6, 9, 13, middle - 1, middle + 1])
+    draw_box(t, w - MENU_WIDTH, 0, MENU_WIDTH, h, h_seps=[2, 6, 9, 14, middle - 1, middle + 1])
 
     # Write log
     draw_text(t, x0, middle, "Event log".center(MENU_WIDTH - 2))
@@ -145,8 +149,42 @@ def update_display(t, params, log):
 def save(params, log):
     import cPickle
     ts = datetime.datetime.fromtimestamp(time.time()).strftime("%Y-%m-%d_%H-%M-%S")
-    cPickle.dump(params, open("almonds_%s.params" % ts, "wb"))
+    if not os.path.exists("saves/"):
+        os.makedirs("saves/")
+    cPickle.dump(params, open("saves/almonds_%s.params" % ts, "wb"))
     log("Current scene saved!")
+
+
+def capture(params, log):
+
+    root = tk.Tk()
+    w, h = root.winfo_screenwidth(), root.winfo_screenheight()
+    root.destroy()
+
+    image = Image.new("RGB", (w, h), "white")
+    pixels = image.load()
+
+    palette = PALETTES[params.palette][1]
+    if params.reverse_palette:
+        palette = palette[::-1]
+
+    for x in xrange(w):
+        for y in xrange(h):
+            count = mandelbrot_capture(x, y, w, h, params)
+            pixels[x, y] = get_color(count, params.max_iterations, palette)
+
+    if not os.path.exists("captures/"):
+        os.makedirs("captures/")
+
+    ts = datetime.datetime.fromtimestamp(time.time()).strftime("%Y-%m-%d_%H-%M-%S")
+    filename = "captures/almonds_%s.png" % ts
+    image.save(filename, "PNG")
+    log("Current scene captured!")
+
+    try:
+        subprocess.call(["open", filename])
+    except OSError:
+        pass
 
 
 def main():
@@ -213,6 +251,8 @@ def main():
                     # Misc
                     elif ch == "s":
                         save(params, log)
+                    elif ch == "h":
+                        capture(params, log)
 
                 event = t.peek_event()
             if running:
