@@ -14,7 +14,7 @@ from mandelbrot import *
 from logger import *
 from params import *
 
-__version__ = "1.0"
+__version__ = "1.3"
 
 MENU_WIDTH = 40
 
