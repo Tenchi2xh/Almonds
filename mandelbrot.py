@@ -1,6 +1,7 @@
 # -*- encoding: utf-8 -*-
 
 import cmath
+import threading
 
 from graphics import *
 from plane import Plane
@@ -44,6 +45,18 @@ class Params:
     def reload(self, log):
         self.log = log
         self.plane = Plane(log)
+
+
+class MBWorker(threading.Thread):
+    def __init__(self, coords, params):
+        self.coords = coords
+        self.params = params
+        self.results = []
+        threading.Thread.__init__(self)
+
+    def run(self):
+        for c in self.coords:
+            self.results.append(mandelbrot(c[0], c[1], self.params))
 
 
 def mandelbrot_iterate(z, c, max_iterations, iteration=0):

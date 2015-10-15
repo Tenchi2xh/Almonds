@@ -5,6 +5,7 @@ import sys
 import textwrap
 import time
 import datetime
+import multiprocessing
 
 import termbox
 
@@ -46,22 +47,49 @@ def draw_panel(t, params, log):
     # draw_gradient(t, 1, 1, w, h, palette, params.dither_type)
 
     generated = 0
+    missing_coords = []
 
     xs = xrange(params.plane_cx, params.plane_cx + params.plane_w - 1)
     ys = xrange(params.plane_cy, params.plane_cy + params.plane_h - 1)
     for x in xs:
         for y in ys:
             if params.plane[x, y] is None:
-                params.plane[x, y] = mandelbrot(x, y, params)
+                missing_coords.append((x, y))
                 generated += 1
+
+    n_threads = 0
+    if len(missing_coords) > 0:
+        threads = []
+
+        chunks = []
+        chunk_size = (w * h) / multiprocessing.cpu_count()
+        for i in xrange(0, len(missing_coords), chunk_size):
+            chunks.append(missing_coords[i:i + chunk_size])
+
+        n_threads = len(chunks)
+        for i in xrange(n_threads):
+            threads.append(MBWorker(chunks[i], params))
+        for i in xrange(n_threads):
+            threads[i].start()
+        for i in xrange(n_threads):
+            threads[i].join()
+        for i in xrange(n_threads):
+            for j in xrange(len(threads[i].coords)):
+                c = threads[i].coords[j]
+                params.plane[c[0], c[1]] = threads[i].results[j]
+
+    if generated > 0:
+        log("Added %d missing cells" % generated)
+        if n_threads > 1:
+            log("(Used %d threads)" % n_threads)
+
+    for x in xs:
+        for y in ys:
             draw_dithered_color(t, x - params.plane_cx + 1,
                                    y - params.plane_cy + 1,
                                    palette, params.dither_type,
                                    params.plane[x, y],
                                    params.max_iterations)
-
-    if generated > 0:
-        log("Added %d missing cells" % generated)
 
 
 def draw_menu(t, params, log):
