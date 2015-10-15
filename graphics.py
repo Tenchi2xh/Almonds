@@ -3,6 +3,8 @@
 import math
 import termbox
 
+from colors import colors
+
 # Box drawing symbols
 
 BOX_TOP_LEFT     = ord(u"┌")
@@ -24,17 +26,18 @@ BOX_X_MIDDLE     = ord(u"┼")
 
 DITHER_1 = u"█▓▒░ "
 DITHER_2 = u"#&X$x=+;:,. "
-DITHER_TYPES = [("ANSI", DITHER_1),
-                ("ASCII Art", DITHER_2)]
+DITHER_TYPES = [("8 colors ANSI", DITHER_1),
+                ("8 colors ASCII", DITHER_2),
+                ["256 colors"]]
 
 # Palettes
 
-PALETTE_1 = [termbox.BLACK, termbox.BLUE, termbox.CYAN, termbox.WHITE]
-PALETTE_2 = [termbox.BLACK, termbox.RED, termbox.YELLOW, termbox.BLACK]
-PALETTE_3 = [termbox.BLACK, termbox.GREEN, termbox.CYAN, termbox.YELLOW, termbox.WHITE]
-PALETTE_4 = [termbox.BLACK, termbox.BLACK, termbox.WHITE, termbox.WHITE, termbox.WHITE]
-PALETTE_5 = [termbox.BLACK, termbox.BLUE, termbox.YELLOW, termbox.WHITE]
-PALETTE_6 = [termbox.WHITE, termbox.MAGENTA, termbox.BLACK, termbox.BLACK, termbox.WHITE]
+PALETTE_1 = [colors.black, colors.blue, colors.cyan, colors.white]
+PALETTE_2 = [colors.black, colors.red, colors.yellow, colors.black]
+PALETTE_3 = [colors.black, colors.green, colors.cyan, colors.yellow, colors.white]
+PALETTE_4 = [colors.black, colors.black, colors.white, colors.white, colors.white]
+PALETTE_5 = [colors.black, colors.blue, colors.yellow, colors.white]
+PALETTE_6 = [colors.white, colors.magenta, colors.black, colors.black, colors.white]
 PALETTES = [("Moonlight", PALETTE_1),
             ("Magma", PALETTE_2),
             ("Radioactive", PALETTE_3),
@@ -44,14 +47,14 @@ PALETTES = [("Moonlight", PALETTE_1),
 
 # Colors
 
-COLORS = {termbox.BLACK:   (  0,   0,   0),
-          termbox.RED:     (255,   0,   0),
-          termbox.GREEN:   (  0, 255,   0),
-          termbox.BLUE:    (  0,   0, 255),
-          termbox.YELLOW:  (255, 255,   0),
-          termbox.MAGENTA: (255,   0, 255),
-          termbox.CYAN:    (0,   255, 255),
-          termbox.WHITE:   (255, 255, 255)}
+COLORS = {colors.black:   (  0,   0,   0),
+          colors.red:     (255,   0,   0),
+          colors.green:   (  0, 255,   0),
+          colors.blue:    (  0,   0, 255),
+          colors.yellow:  (255, 255,   0),
+          colors.magenta: (255,   0, 255),
+          colors.cyan:    (0,   255, 255),
+          colors.white:   (255, 255, 255)}
 
 
 def dither_symbol(value, dither):
@@ -70,14 +73,15 @@ def draw_dithered_color(t, x, y, palette, dither, n, n_max):
     :type t: termbox.Termbox
     """
     i = n * float(len(palette) - 1) / n_max
-    c1 = palette[int(math.floor(i))]
-    c2 = palette[int(math.ceil(i))]
+    c1 = palette[int(math.floor(i))]()
+    c2 = palette[int(math.ceil(i))]()
     value = i - int(math.floor(i))
 
     symbol = dither_symbol(value, dither)
     t.change_cell(x, y, symbol, c1, c2)
 
 
+# FIXME: Consider dither type 2 (256 colors)
 def draw_gradient(t, x0, y0, w, h, palette, dither):
     """
     Test function that draws a gradient in the given rect.
@@ -88,7 +92,7 @@ def draw_gradient(t, x0, y0, w, h, palette, dither):
             draw_dithered_color(t, x0 + x, y0 + y, palette, dither, x, w - 1)
 
 
-def draw_box(t, x0, y0, w, h, fg=termbox.DEFAULT, bg=termbox.BLACK, h_seps=[], v_seps=[]):
+def draw_box(t, x0, y0, w, h, fg=colors.white, bg=colors.black, h_seps=[], v_seps=[]):
     """
     Draws a box in the given terminal.
     :type t: termbox.Termbox
@@ -96,6 +100,9 @@ def draw_box(t, x0, y0, w, h, fg=termbox.DEFAULT, bg=termbox.BLACK, h_seps=[], v
     w -= 1
     h -= 1
     corners = [(x0, y0), (x0 + w, y0), (x0, y0 + h), (x0 + w, y0 + h)]
+
+    fg = fg()
+    bg = bg()
 
     for i, c in enumerate(corners):
         t.change_cell(c[0], c[1], BOX_CORNERS[i], fg, bg)
@@ -128,8 +135,10 @@ def draw_progress_bar(t, message, value, max_value):
     draw_text(t, m_x - w / 2 + 1, m_y, message)
 
 
-def draw_text(t, x0, y0, string, fg=termbox.WHITE, bg=termbox.BLACK):
+def draw_text(t, x0, y0, string, fg=colors.white, bg=colors.black):
     markup_compensation = 0
+    fg = fg()
+    bg = bg()
     for i, c in enumerate(string):
         if c == "$":
             fg, bg = bg, fg

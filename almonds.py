@@ -80,13 +80,21 @@ def draw_panel(t, params):
         if n_threads > 1:
             params.log("(Used %d threads)" % n_threads)
 
-    for x in xs:
-        for y in ys:
-            draw_dithered_color(t, x - params.plane_x0 + 1,
-                                   y - params.plane_y0 + 1,
-                                   palette, params.dither_type,
-                                   params.plane[x, y],
-                                   params.max_iterations)
+    if params.dither_type < 2:
+        for x in xs:
+            for y in ys:
+                draw_dithered_color(t, x - params.plane_x0 + 1,
+                                       y - params.plane_y0 + 1,
+                                       palette, params.dither_type,
+                                       params.plane[x, y],
+                                       params.max_iterations)
+    else:
+        for x in xs:
+            for y in ys:
+                c = get_color(params.plane[x, y], params.max_iterations, palette)
+                t.change_cell(x - params.plane_x0 + 1,
+                              y - params.plane_y0 + 1,
+                              32, colors.black(), colors.to_xterm(c))
 
 
 def draw_menu(t, params):
@@ -114,7 +122,7 @@ def draw_menu(t, params):
     stats("Iterations", params.max_iterations, "$[I]$, $[O]$")
     stats.counter += 1
     stats("Palette", PALETTES[params.palette][0], "$[P]$")
-    stats("Dither type", DITHER_TYPES[params.dither_type][0], "$[D]$")
+    stats("Color mode", DITHER_TYPES[params.dither_type][0], "$[D]$")
     stats("Order", "Reversed" if params.reverse_palette else "Normal", "$[R]$")
     stats("Mode", "Adaptive" if params.adaptive_palette else "Linear", "$[A]$")
     stats.counter += 1
@@ -229,6 +237,8 @@ def main():
     begin = time.time()
     with termbox.Termbox() as t:
 
+        # t.select_output_mode(termbox.OUTPUT_256)
+
         log = Logger()
         log("$Welcome to Almonds v.%s$" % __version__)
 
@@ -285,6 +295,13 @@ def main():
                         params.palette = (params.palette + 1) % len(PALETTES)
                     elif ch == "d":
                         params.dither_type = (params.dither_type + 1) % len(DITHER_TYPES)
+                        if params.dither_type == 2:
+                            colors.select_output_mode(termbox.OUTPUT_256)
+                            t.select_output_mode(termbox.OUTPUT_256)
+                            colors.toggle_bright()
+                        else:
+                            colors.select_output_mode(termbox.OUTPUT_NORMAL)
+                            t.select_output_mode(termbox.OUTPUT_NORMAL)
                     elif ch == "r":
                         params.reverse_palette = not params.reverse_palette
                     # Misc
