@@ -23,7 +23,6 @@ TODO:
   - Open menu, looks for .params files
   - Github releases with bbfreeze + py2app
   - Adaptive palette
-  - Alternative dithering strings
   - Julia ?
 """
 
@@ -39,13 +38,14 @@ def draw_panel(t, params, log):
     params.plane_h = h
     params.resize(w, h)
 
-    draw_box(t, 0, 0, w + 1, h + 1)
-    # draw_gradient(t, 1, 1, w, h, PALETTE_1)
-
-    generated = 0
     palette = PALETTES[params.palette][1]
     if params.reverse_palette:
         palette = palette[::-1]
+
+    draw_box(t, 0, 0, w + 1, h + 1)
+    # draw_gradient(t, 1, 1, w, h, palette, params.dither_type)
+
+    generated = 0
 
     xs = xrange(params.plane_cx, params.plane_cx + params.plane_w - 1)
     ys = xrange(params.plane_cy, params.plane_cy + params.plane_h - 1)
@@ -56,7 +56,7 @@ def draw_panel(t, params, log):
                 generated += 1
             draw_dithered_color(t, x - params.plane_cx + 1,
                                    y - params.plane_cy + 1,
-                                   palette,
+                                   palette, params.dither_type,
                                    params.plane[x, y],
                                    params.max_iterations)
 
@@ -88,8 +88,9 @@ def draw_menu(t, params, log):
     stats("Iterations", params.max_iterations, "[I], [O]")
     stats.counter += 1
     stats("Palette", PALETTES[params.palette][0], "[P]")
-    stats("Palette order", "Reversed" if params.reverse_palette else "Normal", "[R]")
-    stats("Palette mode", "Adaptive" if params.adaptive_palette else "Linear", "[A]")
+    stats("Dither type", DITHER_TYPES[params.dither_type][0], "[D]")
+    stats("Order", "Reversed" if params.reverse_palette else "Normal", "[R]")
+    stats("Mode", "Adaptive" if params.adaptive_palette else "Linear", "[A]")
     stats.counter += 1
     stats("Hi-res capture", "", "[C]")
     stats("Save", "", "[S]")
@@ -177,6 +178,8 @@ def main():
                     # Palette swap
                     elif ch == "p":
                         params.palette = (params.palette + 1) % len(PALETTES)
+                    elif ch == "d":
+                        params.dither_type = (params.dither_type + 1) % len(DITHER_TYPES)
                     elif ch == "r":
                         params.reverse_palette = not params.reverse_palette
                     # Misc

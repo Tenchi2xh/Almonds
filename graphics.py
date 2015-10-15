@@ -22,32 +22,38 @@ BOX_X_MIDDLE     = ord(u"┼")
 
 # Block drawing symbols
 
-BLOCKS = u"█▓▒░ "
+DITHER_1 = u"█▓▒░ "
+DITHER_2 = u"#&X$x=+;:,. "
+DITHER_TYPES = [("ANSI", DITHER_1),
+                ("ASCII Art", DITHER_2)]
 
 # Palettes
 
 PALETTE_1 = [termbox.BLACK, termbox.BLUE, termbox.CYAN, termbox.WHITE]
-PALETTE_2 = [termbox.RED, termbox.YELLOW, termbox.BLACK]
-PALETTE_3 = [termbox.GREEN, termbox.YELLOW, termbox.CYAN, termbox.WHITE]
-PALETTE_4 = [termbox.BLACK, termbox.WHITE]
-PALETTE_5 = [termbox.BLUE, termbox.YELLOW, termbox.BLACK]
+PALETTE_2 = [termbox.BLACK, termbox.RED, termbox.YELLOW, termbox.BLACK]
+PALETTE_3 = [termbox.BLACK, termbox.GREEN, termbox.CYAN, termbox.YELLOW, termbox.WHITE]
+PALETTE_4 = [termbox.BLACK, termbox.BLACK, termbox.WHITE, termbox.WHITE, termbox.WHITE]
+PALETTE_5 = [termbox.BLACK, termbox.BLUE, termbox.YELLOW, termbox.WHITE]
+PALETTE_6 = [termbox.WHITE, termbox.MAGENTA, termbox.BLACK, termbox.BLACK, termbox.WHITE]
 PALETTES = [("Moonlight", PALETTE_1),
             ("Magma", PALETTE_2),
             ("Radioactive", PALETTE_3),
             ("Monochrome", PALETTE_4),
-            ("Neon", PALETTE_5)]
+            ("Neon", PALETTE_5),
+            ("Hello Kitty", PALETTE_6)]
 
 
-def dither_symbol(value):
+def dither_symbol(value, dither):
     """
     Returns the appropriate block drawing symbol for the given intensity.
     :param value: intensity of the color, in the range [0.0, 1.0]
     :return: dithered symbol representing that intensity
     """
-    return ord(BLOCKS[int(round(value * 4))])
+    dither = DITHER_TYPES[dither][1]
+    return ord(dither[int(round(value * (len(dither) - 1)))])
 
 
-def draw_dithered_color(t, x, y, palette, n, n_max):
+def draw_dithered_color(t, x, y, palette, dither, n, n_max):
     """
     Draws a dithered color block on the terminal, given a palette.
     :type t: termbox.Termbox
@@ -57,18 +63,18 @@ def draw_dithered_color(t, x, y, palette, n, n_max):
     c2 = palette[int(math.ceil(i))]
     value = i - int(math.floor(i))
 
-    symbol = dither_symbol(value)
+    symbol = dither_symbol(value, dither)
     t.change_cell(x, y, symbol, c1, c2)
 
 
-def draw_gradient(t, x0, y0, w, h, palette):
+def draw_gradient(t, x0, y0, w, h, palette, dither):
     """
     Test function that draws a gradient in the given rect.
     :type t: termbox.Termbox
     """
     for x in xrange(w - 1):
         for y in xrange(h - 1):
-            draw_dithered_color(t, x0 + x, y0 + y, palette, x, w - 1)
+            draw_dithered_color(t, x0 + x, y0 + y, palette, dither, x, w - 1)
 
 
 def draw_box(t, x0, y0, w, h, fg=termbox.DEFAULT, bg=termbox.BLACK, h_seps=[], v_seps=[]):

@@ -17,6 +17,7 @@ class Params:
         self.zoom = zoom
         self.max_iterations = max_iterations
         self.palette = 0
+        self.dither_type = 0
         self.reverse_palette = False
         self.adaptive_palette = False
         self.mb_cx = -0.5
