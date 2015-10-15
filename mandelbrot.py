@@ -30,6 +30,7 @@ class Params:
         self.plane_h = 10
         self.plane_ratio = 1.0
         self.char_ratio = 0.43
+        self.move_speed = 1
 
     def resize(self, w, h):
         self.plane_w = w

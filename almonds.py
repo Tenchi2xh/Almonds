@@ -62,7 +62,7 @@ def draw_panel(t, params, log):
         threads = []
 
         chunks = []
-        chunk_size = (w * h) / multiprocessing.cpu_count()
+        chunk_size = (w * h) / (2 * multiprocessing.cpu_count())
         for i in xrange(0, len(missing_coords), chunk_size):
             chunks.append(missing_coords[i:i + chunk_size])
 
@@ -111,6 +111,7 @@ def draw_menu(t, params, log):
     # Write stats
     stats("Real", params.mb_cx, u"[←], [→]")
     stats("Imaginary", params.mb_cy, u"[↑], [↓]")
+    stats("Move speed", params.move_speed, "[C], [V]")
     stats.counter += 1
     stats("Zoom", params.zoom, "[Z], [U]")
     stats("Iterations", params.max_iterations, "[I], [O]")
@@ -125,7 +126,7 @@ def draw_menu(t, params, log):
     stats("Exit", "", "[ESC]")
 
     middle = 3 + stats.counter
-    draw_box(t, w - MENU_WIDTH, 0, MENU_WIDTH, h, h_seps=[2, 5, 8, 12, middle - 1, middle + 1])
+    draw_box(t, w - MENU_WIDTH, 0, MENU_WIDTH, h, h_seps=[2, 6, 9, 13, middle - 1, middle + 1])
 
     # Write log
     draw_text(t, x0, middle, "Event log".center(MENU_WIDTH - 2))
@@ -181,13 +182,20 @@ def main():
                 if kind == termbox.EVENT_KEY:
                     # Navigation
                     if key == termbox.KEY_ARROW_UP:
-                        params.plane_cy -= 1
+                        params.plane_cy -= 1 * params.move_speed
                     elif key == termbox.KEY_ARROW_DOWN:
-                        params.plane_cy += 1
+                        params.plane_cy += 1 * params.move_speed
                     elif key == termbox.KEY_ARROW_LEFT:
-                        params.plane_cx -= 2
+                        params.plane_cx -= 2 * params.move_speed
                     elif key == termbox.KEY_ARROW_RIGHT:
-                        params.plane_cx += 2
+                        params.plane_cx += 2 * params.move_speed
+                    # Move speed
+                    if ch == "c":
+                        params.move_speed += 1
+                    elif ch == "v":
+                        params.move_speed -= 1
+                        if params.move_speed == 0:
+                            params.move_speed = 1
                     # Zoom / un-zoom
                     elif ch == "z":
                         zoom(params, 1.3)
