@@ -247,6 +247,10 @@ def main():
             import cPickle
             params = cPickle.load(open(sys.argv[1], "rb"))
             params.reload(log)
+            if params.dither_type == 2:
+                colors.select_output_mode(termbox.OUTPUT_256)
+                t.select_output_mode(termbox.OUTPUT_256)
+                colors.toggle_bright()
 
         init_coords(t, params)
         update_display(t, params)

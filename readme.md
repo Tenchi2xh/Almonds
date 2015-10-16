@@ -34,3 +34,6 @@ Using PyPy will make the hi-res captures faster, but the terminal navigation slo
 - Adaptive palette stretching
 - Julia mode
 - Optimize
+- Fix save loading (re-init coords from mb not plane)
+- Rainbow
+- Document everything
