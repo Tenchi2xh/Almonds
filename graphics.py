@@ -38,12 +38,15 @@ PALETTE_3 = [colors.black, colors.green, colors.cyan, colors.yellow, colors.whit
 PALETTE_4 = [colors.black, colors.black, colors.white, colors.white, colors.white]
 PALETTE_5 = [colors.black, colors.blue, colors.yellow, colors.white]
 PALETTE_6 = [colors.white, colors.magenta, colors.black, colors.black, colors.white]
+PALETTE_7 = [colors.black, colors.red, colors.yellow, colors.green,
+             colors.cyan, colors.blue, colors.magenta, colors.black]
 PALETTES = [("Moonlight", PALETTE_1),
             ("Magma", PALETTE_2),
             ("Radioactive", PALETTE_3),
             ("Monochrome", PALETTE_4),
             ("Neon", PALETTE_5),
-            ("Hello Kitty", PALETTE_6)]
+            ("Hello Kitty", PALETTE_6),
+            ("Rainbow", PALETTE_7)]
 
 # Colors
 
