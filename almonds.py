@@ -86,12 +86,13 @@ def draw_panel(t, params):
                 draw_dithered_color(t, x - params.plane_x0 + 1,
                                        y - params.plane_y0 + 1,
                                        palette, params.dither_type,
-                                       params.plane[x, y],
+                                       (params.plane[x, y] + params.palette_offset) % (params.max_iterations + 1),
                                        params.max_iterations)
     else:
         for x in xs:
             for y in ys:
-                c = get_color(params.plane[x, y], params.max_iterations, palette)
+                c = get_color((params.plane[x, y] + params.palette_offset) % (params.max_iterations + 1),
+                               params.max_iterations, palette)
                 t.change_cell(x - params.plane_x0 + 1,
                               y - params.plane_y0 + 1,
                               32, colors.black(), colors.to_xterm(c))
@@ -106,6 +107,10 @@ def draw_menu(t, params):
     h = t.height()
 
     x0 = w - MENU_WIDTH + 1
+
+    for x in xrange(MENU_WIDTH):
+        for y in xrange(h - 2):
+            t.change_cell(x0 + x, 1 + y, 32, colors.black(), colors.black())
 
     def stats(k, v, shortcuts):
         draw_text(t, x0 + 1, 2 + stats.counter,
@@ -125,13 +130,14 @@ def draw_menu(t, params):
     stats("Color mode", DITHER_TYPES[params.dither_type][0], "$[D]$")
     stats("Order", "Reversed" if params.reverse_palette else "Normal", "$[R]$")
     stats("Mode", "Adaptive" if params.adaptive_palette else "Linear", "$[A]$")
+    stats("Cycle!", "", "$[X]$")
     stats.counter += 1
     stats("Hi-res capture", "", "$[H]$")
     stats("Save", "", "$[S]$")
     stats("Exit", "", "$[ESC]$")
 
     middle = 3 + stats.counter
-    draw_box(t, w - MENU_WIDTH, 0, MENU_WIDTH, h, h_seps=[2, 6, 9, 14, middle - 1, middle + 1])
+    draw_box(t, w - MENU_WIDTH, 0, MENU_WIDTH, h, h_seps=[2, 6, 9, 15, middle - 1, middle + 1])
 
     # Write log
     draw_text(t, x0, middle, "Event log".center(MENU_WIDTH - 2))
@@ -220,6 +226,17 @@ def capture(t, params):
         subprocess.call(["open", filename])
     except OSError:
         pass
+
+
+def cycle(t, params):
+    step = params.max_iterations / 20
+    if step == 0:
+        step = 1
+    for i in xrange(0, params.max_iterations, step):
+        params.palette_offset = i
+        draw_panel(t, params)
+        t.present()
+    params.palette_offset = 0
 
 
 def init_coords(t, params):
@@ -313,6 +330,8 @@ def main():
                         save(params)
                     elif ch == "h":
                         capture(t, params)
+                    elif ch == "x":
+                        cycle(t, params)
 
                 event = t.peek_event()
             if running:
