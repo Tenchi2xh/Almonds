@@ -19,7 +19,7 @@ from params import *
 from utils import *
 
 
-__version__ = "1.9b"
+__version__ = "1.11b"
 
 MENU_WIDTH = 40
 
@@ -79,11 +79,13 @@ def draw_panel(t, params, plane):
 
         p = multiprocessing.Pool(multiprocessing.cpu_count(), initializer=initializer, initargs=(params,))
 
-        results = p.map(compute, missing_coords, chunksize=256)
-
-        for result in results:
+        start = time.time()
+        for i, result in enumerate(p.imap_unordered(compute, missing_coords, chunksize=256)):
             plane[result[0], result[1]] = result[2]
-
+            if time.time() - start > 2:
+                if i % 200 == 0:
+                    draw_progress_bar(t, "Render is taking a longer time...", i, len(missing_coords))
+                    t.present()
         p.close()
 
     if generated > 0:
@@ -266,7 +268,7 @@ def main():
         log("$Welcome to Almonds v.%s$" % __version__)
 
         params = Params(log)
-        plane = Plane(log)
+        plane = Plane()
 
         def load(path):
             import cPickle
