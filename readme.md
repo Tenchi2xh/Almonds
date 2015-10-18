@@ -28,10 +28,10 @@ Using PyPy will make the hi-res captures faster, but the terminal navigation slo
 
 ### TODO
 
-- Fix capture zoom
 - GitHub releases (bbfreeze, Py2App)
 - Adaptive palette stretching
 - Julia mode
-- Optimize
+- Optimize -> multiprocessing.Pool
 - Document everything
 - Two tabs for stats/options
+- Project idea: full-fledged module for `termbox` UI elements
