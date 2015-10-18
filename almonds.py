@@ -19,21 +19,17 @@ from params import *
 from utils import *
 
 
-__version__ = "1.11b"
+__version__ = "1.12b"
 
 MENU_WIDTH = 40
 
 
-def compute(coord):
-    global process_params
-    return coord[0], coord[1], mandelbrot(coord[0], coord[1], process_params)
+def compute((x, y, params)):
+    return x, y, mandelbrot(x, y, params)
 
 
-def compute_capture(coord):
-    global process_w
-    global process_h
-    global process_params
-    return coord[0], coord[1], mandelbrot_capture(coord[0], coord[1], process_w, process_h, process_params)
+def compute_capture((x, y, w, h, params)):
+    return x, y, mandelbrot_capture(x, y, w, h, params)
 
 
 def draw_panel(t, params, plane):
@@ -63,7 +59,7 @@ def draw_panel(t, params, plane):
     for x in xs:
         for y in ys:
             if plane[x, y] is None:
-                missing_coords.append((x, y))
+                missing_coords.append((x, y, params))
                 generated += 1
 
     n_processes = 0
@@ -73,20 +69,14 @@ def draw_panel(t, params, plane):
         if n_processes > n_cores:
             n_processes = n_cores
 
-        def initializer(_params):
-            global process_params
-            process_params = _params
-
-        p = multiprocessing.Pool(multiprocessing.cpu_count(), initializer=initializer, initargs=(params,))
-
         start = time.time()
         for i, result in enumerate(p.imap_unordered(compute, missing_coords, chunksize=256)):
             plane[result[0], result[1]] = result[2]
             if time.time() - start > 2:
                 if i % 200 == 0:
+                    # FIXME: Save screen state to avoid artifacts
                     draw_progress_bar(t, "Render is taking a longer time...", i, len(missing_coords))
                     t.present()
-        p.close()
 
     if generated > 0:
         params.log("Added %d missing cells" % generated)
@@ -178,8 +168,9 @@ def save(params):
     ts = datetime.datetime.fromtimestamp(time.time()).strftime("%Y-%m-%d_%H-%M-%S")
     if not os.path.exists("saves/"):
         os.makedirs("saves/")
-    cPickle.dump(params, open("saves/almonds_%s.params" % ts, "wb"))
-    params.log("Current scene saved!")
+    with open("saves/almonds_%s.params" % ts, "wb") as f:
+        cPickle.dump(params, f)
+        params.log("Current scene saved!")
 
 
 def capture(t, params):
@@ -201,7 +192,7 @@ def capture(t, params):
     if params.reverse_palette:
         palette = palette[::-1]
 
-    coords = [(x, y) for x in xrange(w) for y in xrange(h)]
+    coords = [(x, y, w, h, params) for x in xrange(w) for y in xrange(h)]
 
     def initializer(_params, _w, _h):
         global process_params
@@ -211,15 +202,11 @@ def capture(t, params):
         process_w = _w
         process_h = _h
 
-    p = multiprocessing.Pool(multiprocessing.cpu_count(), initializer=initializer, initargs=(params, w, h))
-
     for i, result in enumerate(p.imap_unordered(compute_capture, coords, chunksize=256)):
         pixels[result[0], result[1]] = get_color(result[2], params.max_iterations, palette)
         if i % 2000 == 0:
             draw_progress_bar(t, "Capturing current scene...", i, w * h)
             t.present()
-
-    p.close()
 
     if not os.path.exists("captures/"):
         os.makedirs("captures/")
@@ -272,14 +259,15 @@ def main():
 
         def load(path):
             import cPickle
-            params = cPickle.load(open(path, "rb"))
-            params.reload(log)
-            if params.dither_type == 2:
-                colors.select_output_mode(termbox.OUTPUT_256)
-                t.select_output_mode(termbox.OUTPUT_256)
-                colors.toggle_bright()
-            log("Save loaded!")
-            return params
+            with open(path, "rb") as f:
+                params = cPickle.load(f)
+                params.reload(log)
+                if params.dither_type == 2:
+                    colors.select_output_mode(termbox.OUTPUT_256)
+                    t.select_output_mode(termbox.OUTPUT_256)
+                    colors.toggle_bright()
+                log("Save loaded!")
+                return params
 
         if len(sys.argv) == 2:
             params = load(sys.argv[1])
@@ -368,8 +356,9 @@ def main():
                 update_display(t, params, plane)
 
     spent = (time.time() - begin) / 60
-    print "\nSpent %d minutes exploring fractals, see you soon :)\n" % spent
+    print "\nYou spent %d minutes exploring fractals, see you soon :)\n" % spent
     print "- Almonds v.%s by Tenchi <tenchi@team2xh.net>\n" % __version__
 
 if __name__ == "__main__":
+    p = multiprocessing.Pool(multiprocessing.cpu_count())
     main()
