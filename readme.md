@@ -29,9 +29,10 @@ Using PyPy will make the hi-res captures faster, but the terminal navigation slo
 ### TODO
 
 - Fix capture zoom
-- Open menu, displays saved .params files
 - GitHub releases (bbfreeze, Py2App)
 - Adaptive palette stretching
 - Julia mode
 - Optimize
 - Document everything
+- Two tabs for stats/options
+- White mode

@@ -19,7 +19,7 @@ from params import *
 from utils import *
 
 
-__version__ = "1.6b"
+__version__ = "1.8b"
 
 MENU_WIDTH = 40
 
@@ -108,9 +108,7 @@ def draw_menu(t, params):
 
     x0 = w - MENU_WIDTH + 1
 
-    for x in xrange(MENU_WIDTH):
-        for y in xrange(h - 2):
-            t.change_cell(x0 + x, 1 + y, 32, colors.black(), colors.black())
+    fill(t, x0, 1, MENU_WIDTH, h - 2, 32)
 
     def stats(k, v, shortcuts):
         draw_text(t, x0 + 1, 2 + stats.counter,
@@ -134,6 +132,7 @@ def draw_menu(t, params):
     stats.counter += 1
     stats("Hi-res capture", "", "$[H]$")
     stats("Save", "", "$[S]$")
+    stats("Load", "", "$[L]$")
     stats("Exit", "", "$[ESC]$")
 
     middle = 3 + stats.counter
@@ -260,14 +259,20 @@ def main():
         log("$Welcome to Almonds v.%s$" % __version__)
 
         params = Params(log)
-        if len(sys.argv) == 2:
+
+        def load(path):
             import cPickle
-            params = cPickle.load(open(sys.argv[1], "rb"))
+            params = cPickle.load(open(path, "rb"))
             params.reload(log)
             if params.dither_type == 2:
                 colors.select_output_mode(termbox.OUTPUT_256)
                 t.select_output_mode(termbox.OUTPUT_256)
                 colors.toggle_bright()
+            log("Save loaded!")
+            return params
+
+        if len(sys.argv) == 2:
+            params = load(sys.argv[1])
 
         init_coords(t, params)
         update_display(t, params)
@@ -328,6 +333,17 @@ def main():
                     # Misc
                     elif ch == "s":
                         save(params)
+                    elif ch == "l":
+                        if not os.path.exists("saves/"):
+                            log("No saved states present")
+                        else:
+                            options = os.listdir("saves/")
+                            menu = OptionMenu(t, options, "Load save")
+                            n = menu.show()
+                            if n >= 0:
+                                params = load("saves/" + options[n])
+                            else:
+                                log("Load canceled")
                     elif ch == "h":
                         capture(t, params)
                     elif ch == "x":
