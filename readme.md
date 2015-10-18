@@ -35,4 +35,3 @@ Using PyPy will make the hi-res captures faster, but the terminal navigation slo
 - Optimize
 - Document everything
 - Two tabs for stats/options
-- White mode

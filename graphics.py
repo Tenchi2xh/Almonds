@@ -97,7 +97,7 @@ def draw_gradient(t, x0, y0, w, h, palette, dither):
             draw_dithered_color(t, x0 + x, y0 + y, palette, dither, x, w - 1)
 
 
-def draw_box(t, x0, y0, w, h, fg=colors.white, bg=colors.black, h_seps=[], v_seps=[]):
+def draw_box(t, x0, y0, w, h, fg=colors.default_fg, bg=colors.default_bg, h_seps=[], v_seps=[]):
     """
     Draws a box in the given terminal.
     :type t: termbox.Termbox
@@ -140,7 +140,7 @@ def draw_progress_bar(t, message, value, max_value):
     draw_text(t, m_x - w / 2 + 1, m_y, message)
 
 
-def draw_scroll_bar(t, x0, y0, h, n_visible, n_items, position, fg=colors.white, bg=colors.black):
+def draw_scroll_bar(t, x0, y0, h, n_visible, n_items, position, fg=colors.default_fg, bg=colors.default_bg):
     knob_height = int(h * 1.0 * n_visible / n_items)
     knob_position = int((h - knob_height) * 1.0 * position / n_items)
     knob_end = knob_position + knob_height
@@ -150,7 +150,7 @@ def draw_scroll_bar(t, x0, y0, h, n_visible, n_items, position, fg=colors.white,
         t.change_cell(x0, y0 + y, symbol, fg(), bg())
 
 
-def draw_text(t, x0, y0, string, fg=colors.white, bg=colors.black):
+def draw_text(t, x0, y0, string, fg=colors.default_fg, bg=colors.default_bg):
     markup_compensation = 0
     fg = fg()
     bg = bg()
@@ -162,7 +162,7 @@ def draw_text(t, x0, y0, string, fg=colors.white, bg=colors.black):
         t.change_cell(x0 + i - markup_compensation, y0, ord(c), fg, bg)
 
 
-def fill(t, x0, y0, w, h, symbol, fg=colors.black, bg=colors.black):
+def fill(t, x0, y0, w, h, symbol, fg=colors.default_fg, bg=colors.default_bg):
     for x in xrange(w):
         for y in xrange(h):
             t.change_cell(x0 + x, y0 + y, symbol, fg(), bg())

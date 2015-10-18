@@ -7,6 +7,10 @@ import colortrans
 class Colors:
     def __init__(self):
         self.offset = 0
+        self.dark = True
+
+    def toggle_dark(self):
+        self.dark = not self.dark
 
     def select_output_mode(self, mode):
         if mode == termbox.OUTPUT_256:
@@ -19,6 +23,16 @@ class Colors:
             self.offset += 8
         elif self.offset == 7:
             self.offset -= 8
+
+    def default_fg(self):
+        if self.dark:
+            return self.white()
+        return self.black()
+
+    def default_bg(self):
+        if self.dark:
+            return self.black()
+        return self.white()
 
     def black(self):
         if self.offset > 0:

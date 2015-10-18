@@ -19,7 +19,7 @@ from params import *
 from utils import *
 
 
-__version__ = "1.8b"
+__version__ = "1.9b"
 
 MENU_WIDTH = 40
 
@@ -131,6 +131,7 @@ def draw_menu(t, params):
     stats("Cycle!", "", "$[X]$")
     stats.counter += 1
     stats("Hi-res capture", "", "$[H]$")
+    stats("Theme", "Dark" if colors.dark else "Light", "$[T]$")
     stats("Save", "", "$[S]$")
     stats("Load", "", "$[L]$")
     stats("Exit", "", "$[ESC]$")
@@ -348,6 +349,8 @@ def main():
                         capture(t, params)
                     elif ch == "x":
                         cycle(t, params)
+                    elif ch == "t":
+                        colors.toggle_dark()
 
                 event = t.peek_event()
             if running:
