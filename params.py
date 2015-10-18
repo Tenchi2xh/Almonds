@@ -23,7 +23,6 @@ class Params:
         self.progress = 0
         self.palette_offset = 0
         # Infinite plane that stores results
-        self.plane = Plane(log)
         self.plane_x0 = None                    # Plane coordinate of leftmost position on the displayed screen
         self.plane_y0 = None                    # Plane coordinate of rightmost position on the displayed screen
         self.plane_w = None                     # Width of the currently displayed screen
@@ -36,13 +35,6 @@ class Params:
         self.plane_h = h
         self.plane_ratio = CHAR_RATIO * w / h
 
-    def __getstate__(self):
-        return dict((k, v) for (k, v) in self.__dict__.iteritems() if k != "plane")
-
-    def __setstate__(self, state):
-        self.__dict__ = state
-
     def reload(self, log):
         self.log = log
-        self.plane = Plane(log)
 

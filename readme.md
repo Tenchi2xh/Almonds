@@ -31,7 +31,9 @@ Using PyPy will make the hi-res captures faster, but the terminal navigation slo
 - GitHub releases (bbfreeze, Py2App)
 - Adaptive palette stretching
 - Julia mode
-- Optimize -> multiprocessing.Pool
+- Fix navigation multiprocessing
 - Document everything
 - Two tabs for stats/options
 - Project idea: full-fledged module for `termbox` UI elements
+- Space to hide log
+- Margins

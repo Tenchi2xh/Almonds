@@ -24,7 +24,19 @@ __version__ = "1.9b"
 MENU_WIDTH = 40
 
 
-def draw_panel(t, params):
+def compute(coord):
+    global process_params
+    return coord[0], coord[1], mandelbrot(coord[0], coord[1], process_params)
+
+
+def compute_capture(coord):
+    global process_w
+    global process_h
+    global process_params
+    return coord[0], coord[1], mandelbrot_capture(coord[0], coord[1], process_w, process_h, process_params)
+
+
+def draw_panel(t, params, plane):
     """
     Draws the application's main panel
     :type t: termbox.Termbox
@@ -50,35 +62,34 @@ def draw_panel(t, params):
     ys = xrange(params.plane_y0, params.plane_y0 + params.plane_h - 1)
     for x in xs:
         for y in ys:
-            if params.plane[x, y] is None:
+            if plane[x, y] is None:
                 missing_coords.append((x, y))
                 generated += 1
 
-    n_threads = 0
+    n_processes = 0
     if len(missing_coords) > 0:
-        threads = []
+        n_cores = multiprocessing.cpu_count()
+        n_processes = len(missing_coords) / 256
+        if n_processes > n_cores:
+            n_processes = n_cores
 
-        chunks = []
-        chunk_size = (w * h) / (2 * multiprocessing.cpu_count())
-        for i in xrange(0, len(missing_coords), chunk_size):
-            chunks.append(missing_coords[i:i + chunk_size])
+        def initializer(_params):
+            global process_params
+            process_params = _params
 
-        n_threads = len(chunks)
-        for i in xrange(n_threads):
-            threads.append(MBWorker(chunks[i], params))
-        for i in xrange(n_threads):
-            threads[i].start()
-        for i in xrange(n_threads):
-            threads[i].join()
-        for i in xrange(n_threads):
-            for j in xrange(len(threads[i].coords)):
-                c = threads[i].coords[j]
-                params.plane[c[0], c[1]] = threads[i].results[j]
+        p = multiprocessing.Pool(multiprocessing.cpu_count(), initializer=initializer, initargs=(params,))
+
+        results = p.map(compute, missing_coords, chunksize=256)
+
+        for result in results:
+            plane[result[0], result[1]] = result[2]
+
+        p.close()
 
     if generated > 0:
         params.log("Added %d missing cells" % generated)
-        if n_threads > 1:
-            params.log("(Used %d threads)" % n_threads)
+        if n_processes > 1:
+            params.log("(Used %d processes)" % n_processes)
 
     if params.dither_type < 2:
         for x in xs:
@@ -86,12 +97,12 @@ def draw_panel(t, params):
                 draw_dithered_color(t, x - params.plane_x0 + 1,
                                        y - params.plane_y0 + 1,
                                        palette, params.dither_type,
-                                       (params.plane[x, y] + params.palette_offset) % (params.max_iterations + 1),
+                                       (plane[x, y] + params.palette_offset) % (params.max_iterations + 1),
                                        params.max_iterations)
     else:
         for x in xs:
             for y in ys:
-                c = get_color((params.plane[x, y] + params.palette_offset) % (params.max_iterations + 1),
+                c = get_color((plane[x, y] + params.palette_offset) % (params.max_iterations + 1),
                                params.max_iterations, palette)
                 t.change_cell(x - params.plane_x0 + 1,
                               y - params.plane_y0 + 1,
@@ -152,10 +163,9 @@ def draw_menu(t, params):
             break
 
 
-def update_display(t, params):
-
+def update_display(t, params, plane):
     t.clear()
-    draw_panel(t, params)
+    draw_panel(t, params, plane)
     update_position(params)
     draw_menu(t, params)
     t.present()
@@ -190,27 +200,24 @@ def capture(t, params):
         palette = palette[::-1]
 
     coords = [(x, y) for x in xrange(w) for y in xrange(h)]
-    threads = []
-    chunks = []
-    chunk_size = (w * h) / (2 * multiprocessing.cpu_count())
-    for i in xrange(0, len(coords), chunk_size):
-        chunks.append(coords[i:i + chunk_size])
 
-    n_threads = len(chunks)
-    lock = threading.Lock()
-    for i in xrange(n_threads):
-        threads.append(MBWorker(chunks[i], params, (w, h), t, lock))
-    for i in xrange(n_threads):
-        threads[i].start()
-    for i in xrange(n_threads):
-        threads[i].join()
-    for i in xrange(n_threads):
-        for j in xrange(len(threads[i].coords)):
-            c = threads[i].coords[j]
-            n = threads[i].results[j]
-            pixels[c[0], c[1]] = get_color(n, params.max_iterations, palette)
+    def initializer(_params, _w, _h):
+        global process_params
+        global process_w
+        global process_h
+        process_params = _params
+        process_w = _w
+        process_h = _h
 
-    params.progress = 0
+    p = multiprocessing.Pool(multiprocessing.cpu_count(), initializer=initializer, initargs=(params, w, h))
+
+    for i, result in enumerate(p.imap_unordered(compute_capture, coords, chunksize=256)):
+        pixels[result[0], result[1]] = get_color(result[2], params.max_iterations, palette)
+        if i % 2000 == 0:
+            draw_progress_bar(t, "Capturing current scene...", i, w * h)
+            t.present()
+
+    p.close()
 
     if not os.path.exists("captures/"):
         os.makedirs("captures/")
@@ -219,8 +226,7 @@ def capture(t, params):
     filename = "captures/almonds_%s.png" % ts
     image.save(filename, "PNG")
     params.log("Current scene captured!")
-    if n_threads > 1:
-        params.log("(Used %d threads)" % n_threads)
+    params.log("(Used %d processes)" % multiprocessing.cpu_count())
 
     try:
         subprocess.call(["open", filename])
@@ -260,6 +266,7 @@ def main():
         log("$Welcome to Almonds v.%s$" % __version__)
 
         params = Params(log)
+        plane = Plane(log)
 
         def load(path):
             import cPickle
@@ -276,7 +283,7 @@ def main():
             params = load(sys.argv[1])
 
         init_coords(t, params)
-        update_display(t, params)
+        update_display(t, params, plane)
 
         running = True
         while running:
@@ -305,18 +312,20 @@ def main():
                     # Zoom / un-zoom
                     elif ch == "z":
                         zoom(params, 1.3)
+                        plane.reset()
                     elif ch == "u":
                         zoom(params, 1 / 1.3)
+                        plane.reset()
                     # Iterations control
                     elif ch == "i":
                         params.max_iterations += 10
-                        params.plane.reset()
+                        plane.reset()
                     elif ch == "o":
                         params.max_iterations -= 10
                         if params.max_iterations <= 0:
                             params.max_iterations = 10
                         else:
-                            params.plane.reset()
+                            plane.reset()
                     # Palette swap
                     elif ch == "p":
                         params.palette = (params.palette + 1) % len(PALETTES)
@@ -354,7 +363,7 @@ def main():
 
                 event = t.peek_event()
             if running:
-                update_display(t, params)
+                update_display(t, params, plane)
 
     spent = (time.time() - begin) / 60
     print "\nSpent %d minutes exploring fractals, see you soon :)\n" % spent

@@ -7,41 +7,6 @@ from graphics import draw_progress_bar
 from utils import clamp
 
 
-class MBWorker(threading.Thread):
-    def __init__(self, coords, params, capture_resolution=None, t=None, lock=None):
-        self.coords = coords
-        self.params = params
-        self.results = []
-        self.capture_resolution = capture_resolution
-        self.t = t
-        self.lock = lock
-        if self.capture_resolution is not None:
-            self.total = capture_resolution[0] * capture_resolution[1]
-        threading.Thread.__init__(self)
-
-    def update_progress(self, i):
-        with self.lock:
-            self.params.progress += i
-            draw_progress_bar(self.t, "Capturing current scene...", self.params.progress, self.total)
-            self.t.present()
-
-    def run(self):
-        if self.capture_resolution is not None:
-            w, h = self.capture_resolution
-            i = 0
-            for c in self.coords:
-                self.results.append(mandelbrot_capture(c[0], c[1], w, h, self.params))
-                i += 1
-                if i > 1000:
-                    self.update_progress(i)
-                    i = 0
-            self.update_progress(i)
-
-        else:
-            for c in self.coords:
-                self.results.append(mandelbrot(c[0], c[1], self.params))
-
-
 def mandelbrot_iterate(z, c, max_iterations, iteration=0):
     if abs(z) > 1000:
         return z, iteration
@@ -114,5 +79,3 @@ def zoom(params, factor):
 
     params.plane_x0 = int((n_x + 1.0) * params.plane_w / (2.0 * params.plane_ratio)) - params.plane_w / 2
     params.plane_y0 = int((n_y + 1.0) * params.plane_h / 2.0) - params.plane_h / 2
-
-    params.plane.reset()
