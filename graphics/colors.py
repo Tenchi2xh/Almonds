@@ -1,6 +1,7 @@
 # -*- encoding: utf-8 -*-
 
 import termbox
+
 import colortrans
 
 

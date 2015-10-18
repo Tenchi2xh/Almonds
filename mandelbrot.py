@@ -1,19 +1,17 @@
 # -*- encoding: utf-8 -*-
 
 import cmath
-import threading
 
-from graphics import draw_progress_bar
 from utils import clamp
 
 
-def mandelbrot_iterate(z, c, max_iterations, iteration=0):
-    if abs(z) > 1000:
-        return z, iteration
-    elif iteration < max_iterations:
-        return mandelbrot_iterate(z * z + c, c, max_iterations, iteration + 1)
-    else:
-        return z * z + c, iteration
+def mandelbrot_iterate(c, max_iterations):
+    z = 0
+    for iterations in xrange(max_iterations):
+        z = z * z + c
+        if abs(z) > 1000:
+            return z, iterations
+    return z * z + c, max_iterations
 
 
 def get_coords(x, y, params):
@@ -29,7 +27,7 @@ def mandelbrot(x, y, params):
     :type params: Params
     """
     mb_x, mb_y = get_coords(x, y, params)
-    mb = mandelbrot_iterate(0, mb_x + 1j * mb_y, params.max_iterations)
+    mb = mandelbrot_iterate(mb_x + 1j * mb_y, params.max_iterations)
 
     z, iterations = mb
 
@@ -50,7 +48,7 @@ def mandelbrot_capture(x, y, w, h, params):
     mb_x = params.zoom * n_x + params.mb_cx
     mb_y = params.zoom * n_y + params.mb_cy
 
-    mb = mandelbrot_iterate(0, mb_x + 1j * mb_y, params.max_iterations)
+    mb = mandelbrot_iterate(mb_x + 1j * mb_y, params.max_iterations)
     z, iterations = mb
 
     # Continuous iteration count for no banding

@@ -4,20 +4,18 @@
 import os
 import sys
 import textwrap
-import time
-import datetime
 import multiprocessing
 import subprocess
-
 import termbox
+
 from PIL import Image
 
-from graphics import *
+from graphics.drawing import *
+from graphics.option_menu import *
 from mandelbrot import *
 from logger import *
 from params import *
 from utils import *
-
 
 __version__ = "1.12b"
 
