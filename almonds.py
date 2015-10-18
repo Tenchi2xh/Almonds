@@ -236,13 +236,13 @@ def capture(t, params):
         pass
 
 
-def cycle(t, params):
+def cycle(t, params, plane):
     step = params.max_iterations / 20
     if step == 0:
         step = 1
     for i in xrange(0, params.max_iterations, step):
         params.palette_offset = i
-        draw_panel(t, params)
+        draw_panel(t, params, plane)
         t.present()
     params.palette_offset = 0
 
@@ -359,7 +359,7 @@ def main():
                     elif ch == "h":
                         capture(t, params)
                     elif ch == "x":
-                        cycle(t, params)
+                        cycle(t, params, plane)
                     elif ch == "t":
                         colors.toggle_dark()
 
