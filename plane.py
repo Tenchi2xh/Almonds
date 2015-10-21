@@ -1,22 +1,37 @@
 # -*- encoding: utf-8 -*-
 
 from types import IntType
+from sys import maxint
 
 
 class Plane:
     """
-    Represents a 2D array spanning from -infinity to +infinity in all directions
+    Represents a 2D array spanning from -infinity to +infinity in all directions.
     """
     def __init__(self, filler=None):
-
+        """
+        :param filler: Default object for missing coordinates.
+        """
         self.filler = filler
         self.plane = {}
 
     def reset(self):
+        """
+        Clears the plane.
+        """
         self.plane = {}
 
-    def extrema(self, x0, y0, w, h, maximum_iterations):
-        minimum = maximum_iterations
+    def extrema(self, x0, y0, w, h):
+        """
+        Returns the minimum and maximum values contained in a given area.
+
+        :param x0: Starting x index.
+        :param y0: Starting y index.
+        :param w:  Width of the area to scan.
+        :param h:  Height of the area to scan.
+        :return:   Tuple containing the minimum and maximum values of the given area.
+        """
+        minimum = maxint
         maximum = 0
         for y in xrange(y0, y0 + h):
             for x in xrange(x0, x0 + w):
@@ -27,6 +42,17 @@ class Plane:
         return minimum, maximum
 
     def __getitem__(self, pos):
+        """
+        Item accessor to fetch values from the plane.
+
+        >>> plane = Plane()
+        >>> ...
+        >>> print plane[3, 10]
+        3.141592653589793
+
+        :param pos: Tuple containing the x and y coordinates.
+        :return:    Value contained in the plane at given coordinates, or filler symbol if non-existent.
+        """
         x, y = pos
         assert type(x) is IntType
         assert type(y) is IntType
@@ -37,6 +63,15 @@ class Plane:
         return self.filler
 
     def __setitem__(self, pos, value):
+        """
+        Item accessor to set values in the plane:
+
+        >>> plane = Plane()
+        >>> plane[3, 10] = 3.141592653589793
+
+        :param pos:   Tuple containing the x and y coordinates.
+        :param value: Value to set in the plane at given coordinates.
+        """
         x, y = pos
         assert type(x) is IntType
         assert type(y) is IntType

@@ -6,6 +6,14 @@ from utils import clamp
 
 
 def mandelbrot_iterate(c, max_iterations):
+    """
+    Returns the number of iterations before escaping the Mandelbrot fractal.
+
+    :param c: Coordinates as a complex number
+    :type c: complex
+    :param max_iterations: Limit of how many tries are attempted.
+    :return: Tuple containing the last complex number in the sequence and the number of iterations.
+    """
     z = 0
     for iterations in xrange(max_iterations):
         z = z * z + c
@@ -15,6 +23,15 @@ def mandelbrot_iterate(c, max_iterations):
 
 
 def get_coords(x, y, params):
+    """
+    Transforms the given coordinates from plane-space to Mandelbrot-space (real and imaginary).
+
+    :param x: X coordinate on the plane.
+    :param y: Y coordinate on the plane.
+    :param params: Current application parameters.
+    :type params: params.Params
+    :return: Tuple containing the re-mapped coordinates in Mandelbrot-space.
+    """
     n_x = x * 2.0 / params.plane_w * params.plane_ratio - 1.0
     n_y = y * 2.0 / params.plane_h - 1.0
     mb_x = params.zoom * n_x
@@ -24,19 +41,39 @@ def get_coords(x, y, params):
 
 def mandelbrot(x, y, params):
     """
-    :type params: Params
+    Computes the number of iterations of the given plane-space coordinates.
+
+    :param x: X coordinate on the plane.
+    :param y: Y coordinate on the plane.
+    :param params: Current application parameters.
+    :type params: params.Params
+    :return: Discrete number of iterations.
     """
     mb_x, mb_y = get_coords(x, y, params)
     mb = mandelbrot_iterate(mb_x + 1j * mb_y, params.max_iterations)
 
-    z, iterations = mb
-
-    return iterations
+    return mb[1]
 
 
 def mandelbrot_capture(x, y, w, h, params):
+    """
+    Computes the number of iterations of the given pixel-space coordinates,
+    for high-res capture purposes.
 
-    # FIXME: Figure out why these corrections are necessary
+    Contrary to :func:`mandelbrot`, this function returns a continuous
+    number of iterations to avoid banding.
+
+    :param x: X coordinate on the picture
+    :param y: Y coordinate on the picture
+    :param w: Width of the picture
+    :param h: Height of the picture
+    :param params: Current application parameters.
+    :type params: params.Params
+    :return: Continuous number of iterations.
+    """
+
+    # FIXME: Figure out why these corrections are necessary or how to make them perfect
+    # Viewport is offset compared to window when capturing without these (found empirically)
     if params.plane_ratio >= 1.0:
         x -= params.plane_w
     else:
@@ -52,6 +89,7 @@ def mandelbrot_capture(x, y, w, h, params):
     z, iterations = mb
 
     # Continuous iteration count for no banding
+    # https://en.wikipedia.org/wiki/Mandelbrot_set#Continuous_.28smooth.29_coloring
     nu = params.max_iterations
     if iterations < params.max_iterations:
         nu = iterations + 2 - abs(cmath.log(cmath.log(abs(z)) / cmath.log(params.max_iterations), 2))
@@ -61,7 +99,10 @@ def mandelbrot_capture(x, y, w, h, params):
 
 def update_position(params):
     """
-    :type params: Params
+    Computes the center of the viewport's Mandelbrot-space coordinates.
+
+    :param params: Current application parameters.
+    :type params: params.Params
     """
     cx = params.plane_x0 + params.plane_w / 2.0
     cy = params.plane_y0 + params.plane_h / 2.0
@@ -69,7 +110,14 @@ def update_position(params):
 
 
 def zoom(params, factor):
+    """
+    Applies a zoom on the current parameters.
 
+    Computes the top-left plane-space coordinates from the Mandelbrot-space coordinates.
+
+    :param params: Current application parameters.
+    :param factor: Zoom factor by which the zoom ratio is divided (bigger factor, more zoom)
+    """
     params.zoom /= factor
 
     n_x = params.mb_cx / params.zoom

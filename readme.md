@@ -30,7 +30,7 @@ Using PyPy will make the hi-res captures faster, but the terminal navigation slo
 
 - GitHub releases (bbfreeze, Py2App)
 - Julia mode
-- Document everything
+- Document everything (graphics package missing)
 - Two tabs for stats/options
 - Project idea: full-fledged module for `termbox` UI elements
 - Space to hide log
