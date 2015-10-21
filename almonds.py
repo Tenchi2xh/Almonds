@@ -81,19 +81,28 @@ def draw_panel(t, params, plane):
         if n_processes > 1:
             params.log("(Used %d processes)" % n_processes)
 
-    if params.dither_type < 2:
-        for x in xs:
-            for y in ys:
+    min_value = 0.0
+    max_value = params.max_iterations
+    max_iterations = params.max_iterations
+
+    if params.adaptive_palette:
+        min_value, max_value = plane.extrema(params.plane_x0, params.plane_y0,
+                                             params.plane_w, params.plane_h, max_iterations)
+    for x in xs:
+        for y in ys:
+            value = (plane[x, y] + params.palette_offset) % (params.max_iterations + 1)
+            if params.adaptive_palette:
+                value = max_iterations
+                if max_value - min_value != 0:
+                    value = (float(value - min_value) / (max_value - min_value)) * max_iterations
+
+            if params.dither_type < 2:
                 draw_dithered_color(t, x - params.plane_x0 + 1,
-                                       y - params.plane_y0 + 1,
-                                       palette, params.dither_type,
-                                       (plane[x, y] + params.palette_offset) % (params.max_iterations + 1),
-                                       params.max_iterations)
-    else:
-        for x in xs:
-            for y in ys:
-                c = get_color((plane[x, y] + params.palette_offset) % (params.max_iterations + 1),
-                               params.max_iterations, palette)
+                                           y - params.plane_y0 + 1,
+                                           palette, params.dither_type,
+                                           value, max_iterations)
+            else:
+                c = get_color(value, max_iterations, palette)
                 t.change_cell(x - params.plane_x0 + 1,
                               y - params.plane_y0 + 1,
                               32, colors.black(), colors.to_xterm(c))
@@ -199,6 +208,8 @@ def capture(t, params):
         process_params = _params
         process_w = _w
         process_h = _h
+
+    # FIXME: Save values before writing them to picture, to take the adaptive settings in consideration
 
     for i, result in enumerate(p.imap_unordered(compute_capture, coords, chunksize=256)):
         pixels[result[0], result[1]] = get_color(result[2], params.max_iterations, palette)
@@ -348,6 +359,8 @@ def main():
                         cycle(t, params, plane)
                     elif ch == "t":
                         colors.toggle_dark()
+                    elif ch == "a":
+                        params.adaptive_palette = not params.adaptive_palette
 
                 event = t.peek_event()
             if running:

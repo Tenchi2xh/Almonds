@@ -15,8 +15,16 @@ class Plane:
     def reset(self):
         self.plane = {}
 
-    def slice(self, x0, y0, x1, y1):
-        pass
+    def extrema(self, x0, y0, w, h, maximum_iterations):
+        minimum = maximum_iterations
+        maximum = 0
+        for y in xrange(y0, y0 + h):
+            for x in xrange(x0, x0 + w):
+                value = self[x, y]
+                if value != self.filler:
+                    minimum = min(minimum, value)
+                    maximum = max(maximum, value)
+        return minimum, maximum
 
     def __getitem__(self, pos):
         x, y = pos

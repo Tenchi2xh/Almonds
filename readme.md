@@ -29,7 +29,6 @@ Using PyPy will make the hi-res captures faster, but the terminal navigation slo
 ### TODO
 
 - GitHub releases (bbfreeze, Py2App)
-- Adaptive palette stretching
 - Julia mode
 - Document everything
 - Two tabs for stats/options
