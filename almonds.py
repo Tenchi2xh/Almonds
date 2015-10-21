@@ -92,9 +92,10 @@ def draw_panel(t, params, plane):
         for y in ys:
             value = (plane[x, y] + params.palette_offset) % (params.max_iterations + 1)
             if params.adaptive_palette:
-                value = max_iterations
-                if max_value - min_value != 0:
+                if max_value - min_value > 0:
                     value = (float(value - min_value) / (max_value - min_value)) * max_iterations
+                else:
+                    value = max_iterations
 
             if params.dither_type < 2:
                 draw_dithered_color(t, x - params.plane_x0 + 1,
