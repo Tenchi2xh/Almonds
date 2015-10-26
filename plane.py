@@ -4,7 +4,7 @@ from types import IntType
 from sys import maxint
 
 
-class Plane:
+class Plane(object):
     """
     Represents a 2D array spanning from -infinity to +infinity in all directions.
     """

@@ -12,6 +12,7 @@ from PIL import Image
 
 from plane import Plane
 from graphics.option_menu import *
+from graphics.input_menu import *
 from mandelbrot import *
 from logger import *
 from params import *
@@ -156,6 +157,7 @@ def draw_menu(t, params):
         draw_option.counter += 1
     draw_option.counter = 1
 
+    h_seps = [2]
     # Draw title
     draw_text(t, x0, 1, ("Almonds v.%s" % __version__).center(MENU_WIDTH - 2))
     # Write options (and stats)
@@ -163,11 +165,14 @@ def draw_menu(t, params):
     draw_option("Real", params.mb_cx, u"$[←]$, $[→]$")
     draw_option("Imaginary", params.mb_cy, u"$[↑]$, $[↓]$")
     draw_option("Move speed", params.move_speed, "$[C]$, $[V]$")
+    draw_option("Input coordinates...", "", "$[Enter]$")
     draw_option.counter += 1
+    h_seps.append(draw_option.counter + 1)
     # Mandelbrot options
     draw_option("Zoom", params.zoom, "$[Z]$, $[U]$")
     draw_option("Iterations", params.max_iterations, "$[I]$, $[O]$")
     draw_option.counter += 1
+    h_seps.append(draw_option.counter + 1)
     # Palette options
     draw_option("Palette", PALETTES[params.palette][0], "$[P]$")
     draw_option("Color mode", DITHER_TYPES[params.dither_type][0], "$[D]$")
@@ -175,16 +180,17 @@ def draw_menu(t, params):
     draw_option("Mode", "Adaptive" if params.adaptive_palette else "Linear", "$[A]$")
     draw_option("Cycle!", "", "$[X]$")
     draw_option.counter += 1
+    h_seps.append(draw_option.counter + 1)
     # Misc.
     draw_option("Hi-res capture", "", "$[H]$")
     draw_option("Theme", "Dark" if colors.dark else "Light", "$[T]$")
     draw_option("Save", "", "$[S]$")
-    draw_option("Load", "", "$[L]$")
+    draw_option("Load...", "", "$[L]$")
     draw_option("Exit", "", "$[ESC]$")
 
     # Draw box with separators
     middle = 3 + draw_option.counter
-    draw_box(t, w - MENU_WIDTH, 0, MENU_WIDTH, h, h_seps=[2, 6, 9, 15, middle - 1, middle + 1])
+    draw_box(t, w - MENU_WIDTH, 0, MENU_WIDTH, h, h_seps=h_seps + [middle - 1, middle + 1])
 
     # Draw log
     draw_text(t, x0, middle, "Event log".center(MENU_WIDTH - 2))
@@ -384,6 +390,29 @@ def main():
                         params.move_speed -= 1
                         if params.move_speed == 0:
                             params.move_speed = 1
+                    # Manual input
+                    elif key == termbox.KEY_ENTER:
+                        menu = InputMenu(t, ["* Real (X)", "* Imaginary (Y)", "Zoom", "Iterations"],
+                                         "Input manual coordinates")
+                        r, values = menu.show()
+                        if r >= 0:
+                            try:
+                                new_mb_cx = float(values[0])
+                                new_mb_cy = float(values[1])
+                                new_zoom = params.zoom
+                                new_iterations = params.max_iterations
+                                try:
+                                    new_zoom = float(values[2])
+                                    new_iterations = int(values[3])
+                                except ValueError:
+                                    pass
+                                params.mb_cx = new_mb_cx
+                                params.mb_cy = new_mb_cy
+                                params.zoom = new_zoom
+                                params.max_iterations = new_iterations
+                                init_coords(t, params)
+                            except ValueError:
+                                params.log("Given coordinates are not floating numbers")
                     # Zoom / un-zoom
                     elif ch == "z":
                         zoom(params, 1.3)

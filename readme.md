@@ -35,4 +35,3 @@ Using PyPy will make the hi-res captures faster, but the terminal navigation slo
 - Project idea: full-fledged module for `termbox` UI elements
 - Space to hide log
 - Margins ? (with rounding, notches will look uneven)
-- Manual coordinates

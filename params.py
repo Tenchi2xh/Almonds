@@ -4,7 +4,7 @@
 CHAR_RATIO = 0.428
 
 
-class Params:
+class Params(object):
     """
     Class representing the current state of Almonds.
     """

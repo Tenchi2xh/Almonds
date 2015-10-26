@@ -4,7 +4,7 @@ import time
 import datetime
 
 
-class Logger:
+class Logger(object):
     """
     Simple logger class.
 
