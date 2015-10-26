@@ -4,7 +4,7 @@ import termbox
 from drawing import *
 
 
-class OptionMenu:
+class OptionMenu(object):
     def __init__(self, t, options, title=""):
         self.t = t
 
@@ -12,6 +12,11 @@ class OptionMenu:
         self.options = options
         self.selected = 0
         self.open = True
+
+        self.width = 0
+        self.height = 0
+        self.x0 = 0
+        self.y0 = 0
 
     def show(self):
         self.draw_menu()
@@ -55,7 +60,6 @@ class OptionMenu:
         draw_box(self.t, self.x0, self.y0, self.width, self.height, h_seps=h_seps)
 
         # Centered title
-        # FIXME: Account for title in widget width
         draw_text(self.t, self.x0 + 1, self.y0 + 1, " " * ((self.width - 2 - len(self.title)) / 2) + self.title)
 
         # Figure out if we need to limit the view due to too many options

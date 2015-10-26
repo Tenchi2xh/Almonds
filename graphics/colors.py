@@ -5,7 +5,7 @@ import termbox
 import colortrans
 
 
-class Colors:
+class Colors(object):
     def __init__(self):
         self.offset = 0
         self.dark = True
