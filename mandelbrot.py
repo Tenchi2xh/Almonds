@@ -11,7 +11,7 @@ if sys.version_info.major > 2:
     xrange = range
 
 
-def mandelbrot_iterate(c, max_iterations):
+def mandelbrot_iterate(c, max_iterations, julia_seed=None):
     """
     Returns the number of iterations before escaping the Mandelbrot fractal.
 
@@ -20,12 +20,14 @@ def mandelbrot_iterate(c, max_iterations):
     :param max_iterations: Limit of how many tries are attempted.
     :return: Tuple containing the last complex number in the sequence and the number of iterations.
     """
-    z = 0
+    z = c
+    if julia_seed is not None:
+        c = julia_seed
     for iterations in xrange(max_iterations):
         z = z * z + c
         if abs(z) > 1000:
             return z, iterations
-    return z * z + c, max_iterations
+    return z, max_iterations
 
 
 def get_coords(x, y, params):
@@ -56,7 +58,7 @@ def mandelbrot(x, y, params):
     :return: Discrete number of iterations.
     """
     mb_x, mb_y = get_coords(x, y, params)
-    mb = mandelbrot_iterate(mb_x + 1j * mb_y, params.max_iterations)
+    mb = mandelbrot_iterate(mb_x + 1j * mb_y, params.max_iterations, params.julia_seed)
 
     return mb[1]
 
@@ -91,7 +93,7 @@ def mandelbrot_capture(x, y, w, h, params):
     mb_x = params.zoom * n_x + params.mb_cx
     mb_y = params.zoom * n_y + params.mb_cy
 
-    mb = mandelbrot_iterate(mb_x + 1j * mb_y, params.max_iterations)
+    mb = mandelbrot_iterate(mb_x + 1j * mb_y, params.max_iterations, params.julia_seed)
     z, iterations = mb
 
     # Continuous iteration count for no banding

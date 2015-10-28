@@ -41,6 +41,26 @@ class Params(object):
         self.plane_ratio = None                 # Ratio of the current screen, including the char ratio
         self.move_speed = 1                     # Number of skipped plane cells for arrow keys movement
 
+        # Backups for when switching to julia
+        self.julia = False
+        self.julia_seed = None
+        self.old_zoom = 1.0
+
+    def toggle_julia(self):
+        if self.julia:
+            self.zoom = self.old_zoom
+            self.mb_cx = self.julia_seed.real
+            self.mb_cy = self.julia_seed.imag
+            self.julia_seed = None
+            self.julia = False
+        else:
+            self.old_zoom = self.zoom
+            self.zoom = 1.0
+            self.julia_seed = self.mb_cx + self.mb_cy * 1j
+            self.mb_cx = 0.0
+            self.mb_cy = 0.0
+            self.julia = True
+
     def resize(self, w, h):
         """
         Used when resizing the plane, resets the plane ratio factor.

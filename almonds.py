@@ -179,6 +179,7 @@ def draw_menu(t, params):
     # Mandelbrot options
     draw_option("Zoom", "{0:.13g}".format(params.zoom), "$[Z]$, $[U]$")
     draw_option("Iterations", params.max_iterations, "$[I]$, $[O]$")
+    draw_option("Julia mode", "On" if params.julia else "Off", "$[J]$")
     draw_option.counter += 1
     h_seps.append(draw_option.counter + 1)
     # Palette options
@@ -449,6 +450,7 @@ def main():
                                 params.zoom = new_zoom
                                 params.max_iterations = new_iterations
                                 init_coords(t, params)
+                                plane.reset()
                             except ValueError:
                                 params.log("Given coordinates are not floating numbers")
                     # Zoom / un-zoom
@@ -504,6 +506,10 @@ def main():
                         colors.toggle_dark()
                     elif ch == "a":
                         params.adaptive_palette = not params.adaptive_palette
+                    elif ch == "j":
+                        params.toggle_julia()
+                        init_coords(t, params)
+                        plane.reset()
 
                 event = t.peek_event()
             if running:
