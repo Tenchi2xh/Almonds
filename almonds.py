@@ -106,6 +106,10 @@ def draw_panel(t, params, plane):
         min_value, max_value = plane.extrema(params.plane_x0, params.plane_y0,
                                              params.plane_w, params.plane_h)
 
+    crosshairs_coord = None
+    if params.crosshairs:
+        crosshairs_coord = params.crosshairs_coord
+
     # Draw all values in termbox
     for x in xs:
         for y in ys:
@@ -122,13 +126,14 @@ def draw_panel(t, params, plane):
                 draw_dithered_color(t, x - params.plane_x0 + 1,
                                            y - params.plane_y0 + 1,
                                            palette, params.dither_type,
-                                           value, max_iterations)
+                                           value, max_iterations,
+                                           crosshairs_coord=crosshairs_coord)
             # 256 colors mode
             else:
-                c = get_color(value, max_iterations, palette)
-                t.change_cell(x - params.plane_x0 + 1,
+                draw_color(t, x - params.plane_x0 + 1,
                               y - params.plane_y0 + 1,
-                              32, colors.black(), colors.to_xterm(c))
+                              value, max_iterations, palette,
+                              crosshairs_coord=crosshairs_coord)
 
     # Draw bounding box
     draw_box(t, 0, 0, w + 1, h + 1)
@@ -172,11 +177,11 @@ def draw_menu(t, params):
     # Mandelbrot position
     draw_option("Real", "{0:.13g}".format(params.mb_cx), u"$[←]$, $[→]$")
     draw_option("Imaginary", "{0:.13g}".format(params.mb_cy), u"$[↑]$, $[↓]$")
-    draw_option("Move speed", params.move_speed, "$[C]$, $[V]$")
     draw_option("Input coordinates...", "", "$[Enter]$")
     draw_option.counter += 1
     h_seps.append(draw_option.counter + 1)
     # Mandelbrot options
+    draw_option("Move speed", params.move_speed, "$[C]$, $[V]$")
     draw_option("Zoom", "{0:.13g}".format(params.zoom), "$[Z]$, $[U]$")
     draw_option("Iterations", params.max_iterations, "$[I]$, $[O]$")
     draw_option("Julia mode", "On" if params.julia else "Off", "$[J]$")
@@ -187,11 +192,12 @@ def draw_menu(t, params):
     draw_option("Color mode", DITHER_TYPES[params.dither_type][0], "$[D]$")
     draw_option("Order", "Reversed" if params.reverse_palette else "Normal", "$[R]$")
     draw_option("Mode", "Adaptive" if params.adaptive_palette else "Linear", "$[A]$")
-    draw_option("Cycle!", "", "$[X]$")
+    draw_option("Cycle!", "", "$[Y]$")
     draw_option.counter += 1
     h_seps.append(draw_option.counter + 1)
     # Misc.
     draw_option("Hi-res capture", "", "$[H]$")
+    draw_option("Crosshairs", "On" if params.crosshairs else "Off", "$[X]$")
     draw_option("Theme", "Dark" if colors.dark else "Light", "$[T]$")
     draw_option("Save", "", "$[S]$")
     draw_option("Load...", "", "$[L]$")
@@ -506,7 +512,7 @@ def main():
                                 log("Load canceled")
                     elif ch == "h":
                         capture(t, params)
-                    elif ch == "x":
+                    elif ch == "y":
                         cycle(t, params, plane)
                     elif ch == "t":
                         colors.toggle_dark()
@@ -516,6 +522,8 @@ def main():
                         params.toggle_julia()
                         init_coords(t, params)
                         plane.reset()
+                    elif ch == "x":
+                        params.crosshairs = not params.crosshairs
 
                 event = t.peek_event()
             if running:

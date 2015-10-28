@@ -32,6 +32,8 @@ class Params(object):
         self.adaptive_palette = False           # Stretches the palette to what's currently visible
         self.progress = 0                       # Used for progress bars
         self.palette_offset = 0                 # Temporary offset for color cycling
+        self.crosshairs = False
+        self.crosshairs_coord = None
 
         # Infinite plane that stores results
         self.plane_x0 = None                    # Plane coordinate of leftmost position on the displayed screen
@@ -71,3 +73,6 @@ class Params(object):
         self.plane_w = w
         self.plane_h = h
         self.plane_ratio = CHAR_RATIO * w / h
+
+        if self.crosshairs:
+            self.crosshairs_coord = (w // 2, h // 2)

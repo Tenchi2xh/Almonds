@@ -73,6 +73,13 @@ COLORS = {colors.black:   (  0,   0,   0),
           colors.white:   (255, 255, 255)}
 
 
+def sort_palette(palette):
+    def intensity(color):
+        return sum(COLORS[color]) / 3
+
+    return sorted(list(set(palette)), key=intensity)
+
+
 def dither_symbol(value, dither):
     """
     Returns the appropriate block drawing symbol for the given intensity.
@@ -83,18 +90,60 @@ def dither_symbol(value, dither):
     return ord(dither[int(round(value * (len(dither) - 1)))])
 
 
-def draw_dithered_color(t, x, y, palette, dither, n, n_max):
+def draw_dithered_color(t, x, y, palette, dither, n, n_max, crosshairs_coord=None):
     """
     Draws a dithered color block on the terminal, given a palette.
     :type t: termbox.Termbox
     """
     i = n * (len(palette) - 1) / n_max
-    c1 = palette[int(math.floor(i))]()
-    c2 = palette[int(math.ceil(i))]()
+    c1 = palette[int(math.floor(i))]
+    c2 = palette[int(math.ceil(i))]
     value = i - int(math.floor(i))
 
     symbol = dither_symbol(value, dither)
-    t.change_cell(x, y, symbol, c1, c2)
+
+    if crosshairs_coord is not None:
+        old_symbol = symbol
+        symbol, crosshairs = get_crosshairs_symbol(x, y, old_symbol, crosshairs_coord)
+        if crosshairs:
+            sorted_palette = sort_palette(palette)
+            if old_symbol == ord(DITHER_TYPES[dither][1][0]):
+                c2 = c1
+            sorted_index = sorted_palette.index(c2)
+            if sorted_index > len(sorted_palette) // 2:
+                c1 = sorted_palette[0]
+            else:
+                c1 = sorted_palette[-1]
+
+    t.change_cell(x, y, symbol, c1(), c2())
+
+
+def draw_color(t, x, y, value, max_iterations, palette, crosshairs_coord=None):
+    bg = get_color(value, max_iterations, palette)
+    symbol = 32
+    fg = colors.black()
+    if crosshairs_coord is not None:
+        symbol, crosshairs = get_crosshairs_symbol(x, y, symbol, crosshairs_coord)
+        if crosshairs:
+            fg = colors.to_xterm((255 - bg[0], 255 - bg[1], 255 - bg[2]))
+
+    t.change_cell(x, y, symbol, fg, colors.to_xterm(bg))
+
+
+def get_crosshairs_symbol(x, y, symbol, crosshairs_coord):
+
+    crosshairs = False
+    if x == crosshairs_coord[0]:
+        crosshairs = True
+        if y == crosshairs_coord[1]:
+            symbol = BOX_X_MIDDLE
+        else:
+            symbol = BOX_VERTICAL
+    elif y == crosshairs_coord[1]:
+        crosshairs = True
+        symbol = BOX_HORIZONTAL
+
+    return symbol, crosshairs
 
 
 # FIXME: Consider dither type 2 (256 colors)
