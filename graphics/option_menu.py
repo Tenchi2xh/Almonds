@@ -1,7 +1,10 @@
 # -*- encoding: utf-8 -*-
+
+from __future__ import division
+
 import termbox
 
-from drawing import *
+from .drawing import *
 
 
 class OptionMenu(object):
@@ -60,7 +63,7 @@ class OptionMenu(object):
         draw_box(self.t, self.x0, self.y0, self.width, self.height, h_seps=h_seps)
 
         # Centered title
-        draw_text(self.t, self.x0 + 1, self.y0 + 1, " " * ((self.width - 2 - len(self.title)) / 2) + self.title)
+        draw_text(self.t, self.x0 + 1, self.y0 + 1, " " * ((self.width - 2 - len(self.title)) // 2) + self.title)
 
         # Figure out if we need to limit the view due to too many options
         view = self.options
@@ -69,11 +72,11 @@ class OptionMenu(object):
         # If too many options..
         if len(view) > max_items:
             # If selected option is further than the first half of first visible part the list,
-            if self.selected > max_items / 2:
+            if self.selected > max_items // 2:
                 # Start offsetting the view
-                offset_selected = self.selected - (max_items / 2)
+                offset_selected = self.selected - (max_items // 2)
             # If we reach the end of the list,
-            if self.selected > len(view) - (max_items / 2):
+            if self.selected > len(view) - (max_items // 2):
                 # Keep a fixed offset
                 offset_selected = len(view) - max_items
 
@@ -101,8 +104,8 @@ class OptionMenu(object):
 
     def update_dimensions(self):
         # Prevent menu from taking the whole screen
-        max_width = 2 * self.t.width() / 5
-        max_height = 2 * self.t.height() / 3
+        max_width = 2 * self.t.width() // 5
+        max_height = 2 * self.t.height() // 3
 
         longest = len(max(self.options, key=len))
         # Fit menu to option lengths if small enough, else use proportions
@@ -117,5 +120,5 @@ class OptionMenu(object):
             self.width += 1
 
         # Center the menu
-        self.x0 = (self.t.width() - self.width) / 2
-        self.y0 = (self.t.height() - self.height) / 2
+        self.x0 = (self.t.width() - self.width) // 2
+        self.y0 = (self.t.height() - self.height) // 2

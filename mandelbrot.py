@@ -1,8 +1,14 @@
 # -*- encoding: utf-8 -*-
 
+from __future__ import division
+
 import cmath
+import sys
 
 from utils import clamp
+
+if sys.version_info.major > 2:
+    xrange = range
 
 
 def mandelbrot_iterate(c, max_iterations):
@@ -72,14 +78,7 @@ def mandelbrot_capture(x, y, w, h, params):
     :return: Continuous number of iterations.
     """
 
-    # FIXME: Figure out why these corrections are necessary or how to make them perfect
-    # Viewport is offset compared to window when capturing without these (found empirically)
-    if params.plane_ratio >= 1.0:
-        x -= params.plane_w
-    else:
-        x += 3.0 * params.plane_w
-
-    ratio = float(w) / h
+    ratio = w / h
     n_x = x * 2.0 / w * ratio - 1.0
     n_y = y * 2.0 / h - 1.0
     mb_x = params.zoom * n_x + params.mb_cx
@@ -123,5 +122,5 @@ def zoom(params, factor):
     n_x = params.mb_cx / params.zoom
     n_y = params.mb_cy / params.zoom
 
-    params.plane_x0 = int((n_x + 1.0) * params.plane_w / (2.0 * params.plane_ratio)) - params.plane_w / 2
-    params.plane_y0 = int((n_y + 1.0) * params.plane_h / 2.0) - params.plane_h / 2
+    params.plane_x0 = int((n_x + 1.0) * params.plane_w / (2.0 * params.plane_ratio)) - params.plane_w // 2
+    params.plane_y0 = int((n_y + 1.0) * params.plane_h / 2.0) - params.plane_h // 2

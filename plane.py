@@ -1,8 +1,9 @@
 # -*- encoding: utf-8 -*-
 
-from types import IntType
-from sys import maxint
+import sys
 
+if sys.version_info.major > 2:
+    xrange = range
 
 class Plane(object):
     """
@@ -31,7 +32,7 @@ class Plane(object):
         :param h:  Height of the area to scan.
         :return:   Tuple containing the minimum and maximum values of the given area.
         """
-        minimum = maxint
+        minimum = 9223372036854775807
         maximum = 0
         for y in xrange(y0, y0 + h):
             for x in xrange(x0, x0 + w):
@@ -54,8 +55,8 @@ class Plane(object):
         :return:    Value contained in the plane at given coordinates, or filler symbol if non-existent.
         """
         x, y = pos
-        assert type(x) is IntType
-        assert type(y) is IntType
+        assert type(x) is int
+        assert type(y) is int
 
         line = self.plane.get(y, self.filler)
         if line is not self.filler:
@@ -73,8 +74,8 @@ class Plane(object):
         :param value: Value to set in the plane at given coordinates.
         """
         x, y = pos
-        assert type(x) is IntType
-        assert type(y) is IntType
+        assert type(x) is int
+        assert type(y) is int
 
         line = self.plane.get(y, self.filler)
         if line is self.filler:

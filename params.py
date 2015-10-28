@@ -1,5 +1,7 @@
 # -*- encoding: utf-8 -*-
 
+from __future__ import division
+
 # Unlike pixels, terminal characters do not have a 1:1 ratio
 CHAR_RATIO = 0.428
 
@@ -25,7 +27,7 @@ class Params(object):
 
         # Appearance
         self.palette = 0                        # Color palette used
-        self.dither_type = 0                    # Type of text characters used
+        self.dither_type = 2                    # Type of text characters used
         self.reverse_palette = False            # If true, palette is read backwards
         self.adaptive_palette = False           # Stretches the palette to what's currently visible
         self.progress = 0                       # Used for progress bars

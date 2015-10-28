@@ -1,6 +1,9 @@
 #!/usr/bin/python
 # -*- encoding: utf-8 -*-
 
+from __future__ import print_function
+from __future__ import division
+
 import os
 import sys
 import textwrap
@@ -22,13 +25,18 @@ __version__ = "1.13b"
 
 MENU_WIDTH = 40
 
+if sys.version_info.major > 2:
+    xrange = range
 
-def compute((x, y, params)):
+
+def compute(args):
+    x, y, params = args
     """Callable function for the multiprocessing pool."""
     return x, y, mandelbrot(x, y, params)
 
 
-def compute_capture((x, y, w, h, params)):
+def compute_capture(args):
+    x, y, w, h, params = args
     """Callable function for the multiprocessing pool."""
     return x, y, mandelbrot_capture(x, y, w, h, params)
 
@@ -73,7 +81,7 @@ def draw_panel(t, params, plane):
     n_processes = 0
     if len(missing_coords) > 0:
         n_cores = multiprocessing.cpu_count()
-        n_processes = len(missing_coords) / 256
+        n_processes = len(missing_coords) // 256
         if n_processes > n_cores:
             n_processes = n_cores
 
@@ -105,7 +113,7 @@ def draw_panel(t, params, plane):
             if params.adaptive_palette:
                 # Remap values from (min_value, max_value) to (0, max_iterations)
                 if max_value - min_value > 0:
-                    value = (float(value - min_value) / (max_value - min_value)) * max_iterations
+                    value = ((value - min_value) / (max_value - min_value)) * max_iterations
                 else:
                     value = max_iterations
 
@@ -162,14 +170,14 @@ def draw_menu(t, params):
     draw_text(t, x0, 1, ("Almonds v.%s" % __version__).center(MENU_WIDTH - 2))
     # Write options (and stats)
     # Mandelbrot position
-    draw_option("Real", params.mb_cx, u"$[←]$, $[→]$")
-    draw_option("Imaginary", params.mb_cy, u"$[↑]$, $[↓]$")
+    draw_option("Real", "{0:.13g}".format(params.mb_cx), u"$[←]$, $[→]$")
+    draw_option("Imaginary", "{0:.13g}".format(params.mb_cy), u"$[↑]$, $[↓]$")
     draw_option("Move speed", params.move_speed, "$[C]$, $[V]$")
     draw_option("Input coordinates...", "", "$[Enter]$")
     draw_option.counter += 1
     h_seps.append(draw_option.counter + 1)
     # Mandelbrot options
-    draw_option("Zoom", params.zoom, "$[Z]$, $[U]$")
+    draw_option("Zoom", "{0:.13g}".format(params.zoom), "$[Z]$, $[U]$")
     draw_option("Iterations", params.max_iterations, "$[I]$, $[O]$")
     draw_option.counter += 1
     h_seps.append(draw_option.counter + 1)
@@ -252,7 +260,7 @@ def capture(t, params):
     w, h = screen_resolution()
 
     # Re-adapt dimensions to match current plane ratio
-    old_ratio = 1.0 * w / h
+    old_ratio = w / h
     new_ratio = params.plane_ratio
     if old_ratio > new_ratio:
         w = int(h * new_ratio)
@@ -306,7 +314,7 @@ def cycle(t, params, plane):
     :type plane: plane.Plane
     :return:
     """
-    step = params.max_iterations / 20
+    step = params.max_iterations // 20
     if step == 0:
         step = 1
     for i in xrange(0, params.max_iterations, step):
@@ -347,6 +355,10 @@ def main():
 
         params = Params(log)
         plane = Plane()
+        if params.dither_type == 2:
+            colors.select_output_mode(termbox.OUTPUT_256)
+            t.select_output_mode(termbox.OUTPUT_256)
+            colors.toggle_bright()
 
         def load(path):
             import cPickle
@@ -371,6 +383,8 @@ def main():
             event = t.poll_event()
             while event:
                 (kind, ch, key, mod, w, h, x, y) = event
+                if ch is not None:
+                    ch = ch.lower()
                 if kind == termbox.EVENT_KEY and key in (termbox.KEY_ESC, termbox.KEY_CTRL_C):
                     running = False
                 if kind == termbox.EVENT_KEY:
@@ -380,11 +394,11 @@ def main():
                     elif key == termbox.KEY_ARROW_DOWN:
                         params.plane_y0 += 1 * params.move_speed
                     elif key == termbox.KEY_ARROW_LEFT:
-                        params.plane_x0 -= 2 * params.move_speed
+                        params.plane_x0 -= int(2 * params.move_speed)
                     elif key == termbox.KEY_ARROW_RIGHT:
-                        params.plane_x0 += 2 * params.move_speed
+                        params.plane_x0 += int(2 * params.move_speed)
                     # Move speed
-                    if ch == "c":
+                    elif ch == "c":
                         params.move_speed += 1
                     elif ch == "v":
                         params.move_speed -= 1
@@ -392,7 +406,7 @@ def main():
                             params.move_speed = 1
                     # Manual input
                     elif key == termbox.KEY_ENTER:
-                        menu = InputMenu(t, ["* Real (X)", "* Imaginary (Y)", "Zoom", "Iterations"],
+                        menu = InputMenu(t, ["* Real (X)", "* Imaginary (Y)", "  Zoom", "  Iterations"],
                                          "Input manual coordinates")
                         r, values = menu.show()
                         if r >= 0:
@@ -471,9 +485,9 @@ def main():
             if running:
                 update_display(t, params, plane)
 
-    spent = (time.time() - begin) / 60
-    print "\nYou spent %d minutes exploring fractals, see you soon :)\n" % spent
-    print "- Almonds v.%s by Tenchi <tenchi@team2xh.net>\n" % __version__
+    spent = (time.time() - begin) // 60
+    print("\nYou spent %d minutes exploring fractals, see you soon :)\n" % spent)
+    print("- Almonds v.%s by Tenchi <tenchi@team2xh.net>\n" % __version__)
 
 if __name__ == "__main__":
     p = multiprocessing.Pool(multiprocessing.cpu_count())

@@ -2,7 +2,7 @@
 
 import termbox
 
-import colortrans
+from .colortrans import rgb2short
 
 
 class Colors(object):
@@ -64,6 +64,6 @@ class Colors(object):
     @staticmethod
     def to_xterm(color):
         hex_color = '%02x%02x%02x' % color
-        return int(colortrans.rgb2short(hex_color)[0])
+        return int(rgb2short(hex_color)[0])
 
 colors = Colors()

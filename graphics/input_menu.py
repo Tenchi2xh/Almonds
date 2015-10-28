@@ -1,9 +1,12 @@
 # -*- encoding: utf-8 -*-
-import termbox
+
+from __future__ import division
 
 import string
 
-from drawing import *
+import termbox
+
+from .drawing import *
 
 
 class InputMenu(object):
@@ -85,7 +88,7 @@ class InputMenu(object):
         draw_box(self.t, self.x0, self.y0, self.width, self.height, h_seps=h_seps)
 
         # Centered title
-        draw_text(self.t, self.x0 + 1, self.y0 + 1, " " * ((self.width - 2 - len(self.title)) / 2) + self.title)
+        draw_text(self.t, self.x0 + 1, self.y0 + 1, " " * ((self.width - 2 - len(self.title)) // 2) + self.title)
 
         for y, field in enumerate(self.fields):
             text = " " + field + ": " + " " * (self.longest - len(field))
@@ -101,7 +104,7 @@ class InputMenu(object):
 
     def update_dimensions(self):
         # Prevent menu from taking the whole screen
-        max_width = 2 * self.t.width() / 5
+        max_width = 2 * self.t.width() // 5
 
         longest = len(max(self.fields, key=len))
         self.longest = longest
@@ -115,5 +118,5 @@ class InputMenu(object):
             self.height += 2
 
         # Center the window
-        self.x0 = (self.t.width() - self.width) / 2
-        self.y0 = (self.t.height() - self.height) / 2
+        self.x0 = (self.t.width() - self.width) // 2
+        self.y0 = (self.t.height() - self.height) // 2

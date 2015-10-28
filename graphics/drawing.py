@@ -1,10 +1,15 @@
 # -*- encoding: utf-8 -*-
 
+from __future__ import division
+
 import math
 import termbox
+import sys
 
-from colors import colors
+from .colors import colors
 
+if sys.version_info.major > 2:
+    xrange = range
 
 # Box drawing symbols
 
@@ -83,7 +88,7 @@ def draw_dithered_color(t, x, y, palette, dither, n, n_max):
     Draws a dithered color block on the terminal, given a palette.
     :type t: termbox.Termbox
     """
-    i = n * float(len(palette) - 1) / n_max
+    i = n * (len(palette) - 1) / n_max
     c1 = palette[int(math.floor(i))]()
     c2 = palette[int(math.ceil(i))]()
     value = i - int(math.floor(i))
@@ -135,20 +140,20 @@ def draw_progress_bar(t, message, value, max_value):
     """
     :type t: termbox.Termbox
     """
-    m_x = t.width() / 2
-    m_y = t.height() / 2
+    m_x = t.width() // 2
+    m_y = t.height() // 2
     w = len(message) + 4
     h = 3
-    draw_box(t, m_x - w / 2, m_y - 1, w, h)
+    draw_box(t, m_x - w // 2, m_y - 1, w, h)
     message = " %s " % message
-    i = int((float(value) / max_value) * (len(message) + 2))
+    i = int((value / max_value) * (len(message) + 2))
     message = "$" + message[:i] + "$" + message[i:]
-    draw_text(t, m_x - w / 2 + 1, m_y, message)
+    draw_text(t, m_x - w // 2 + 1, m_y, message)
 
 
 def draw_scroll_bar(t, x0, y0, h, n_visible, n_items, position, fg=colors.default_fg, bg=colors.default_bg):
-    knob_height = int(h * 1.0 * n_visible / n_items)
-    knob_position = int((h - knob_height) * 1.0 * position / n_items)
+    knob_height = int(h * n_visible / n_items)
+    knob_position = int((h - knob_height) * position / n_items)
     knob_end = knob_position + knob_height
 
     for y in xrange(h):
