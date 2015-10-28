@@ -418,6 +418,8 @@ def main():
             event = t.poll_event()
             while event:
                 (kind, ch, key, mod, w, h, x, y) = event
+                if kind == termbox.EVENT_RESIZE:
+                    plane.reset()
                 if ch is not None:
                     ch = ch.lower()
                 if kind == termbox.EVENT_KEY and key in (termbox.KEY_ESC, termbox.KEY_CTRL_C):
