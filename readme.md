@@ -4,9 +4,11 @@ Terminal Mandelbrot fractal viewer, using [`termbox`](https://github.com/nsf/ter
 
 ---
 
-### Requisites
+### Running
 
-You will need to install `termbox`, `PIL` (or `Pillow`), then run:
+Grab the latest binaries on the [releases page](https://github.com/Tenchi2xh/Almonds/releases/latest). These don't need Python or any library to be run.
+
+If you want to run the script from the source, you will need to install `termbox`, `PIL` (or `Pillow`), then run:
 
 ```
 $ python almonds.py
@@ -50,9 +52,8 @@ Using PyPy will make the hi-res captures faster, but the terminal navigation slo
 
 ### TODO
 
-- GitHub releases (bbfreeze, Py2App)
-- Document everything (graphics package missing)
-- Two tabs for stats/options
-- Project idea: full-fledged module for `termbox` UI elements
-- Space to hide log
-- Margins ? (with rounding, notches will look uneven)
+- Find way to build distributable on Windows
+- Finish documenting
+- Separate options in two tabs ?
+- Press <kbd>SPACE</kbd> to hide log
+- New project idea: full-fledged python module for making `termbox` UI applications
