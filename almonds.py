@@ -240,7 +240,11 @@ def save(params):
     :param params: Current application parameters.
     :return:
     """
-    import cPickle
+    if sys.version_info.major > 2:
+        import pickle
+        cPickle = pickle
+    else:
+        import cPickle
     ts = datetime.datetime.fromtimestamp(time.time()).strftime("%Y-%m-%d_%H-%M-%S")
     if not os.path.exists("saves/"):
         os.makedirs("saves/")
@@ -496,6 +500,8 @@ def main():
                             n = menu.show()
                             if n >= 0:
                                 params = load("saves/" + options[n])
+                                init_coords(t, params)
+                                plane.reset()
                             else:
                                 log("Load canceled")
                     elif ch == "h":
