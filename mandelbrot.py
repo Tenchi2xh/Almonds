@@ -78,6 +78,13 @@ def mandelbrot_capture(x, y, w, h, params):
     :return: Continuous number of iterations.
     """
 
+    # FIXME: Figure out why these corrections are necessary or how to make them perfect
+    # Viewport is offset compared to window when capturing without these (found empirically)
+    if params.plane_ratio >= 1.0:
+        x -= params.plane_w
+    else:
+        x += 3.0 * params.plane_w
+
     ratio = w / h
     n_x = x * 2.0 / w * ratio - 1.0
     n_y = y * 2.0 / h - 1.0

@@ -361,7 +361,12 @@ def main():
             colors.toggle_bright()
 
         def load(path):
-            import cPickle
+            if sys.version_info.major > 2:
+                import pickle
+                cPickle = pickle
+            else:
+                import cPickle
+
             with open(path, "rb") as f:
                 params = cPickle.load(f)
                 params.log = log
