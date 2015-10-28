@@ -5,6 +5,7 @@ import sys
 if sys.version_info.major > 2:
     xrange = range
 
+
 class Plane(object):
     """
     Represents a 2D array spanning from -infinity to +infinity in all directions.

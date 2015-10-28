@@ -29,7 +29,6 @@ Using PyPy will make the hi-res captures faster, but the terminal navigation slo
 ### TODO
 
 - GitHub releases (bbfreeze, Py2App)
-- Julia mode
 - Document everything (graphics package missing)
 - Two tabs for stats/options
 - Project idea: full-fledged module for `termbox` UI elements
