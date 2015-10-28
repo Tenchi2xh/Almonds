@@ -172,7 +172,7 @@ def draw_menu(t, params):
 
     h_seps = [2]
     # Draw title
-    draw_text(t, x0, 1, ("Almonds v.%s" % __version__).center(MENU_WIDTH - 2))
+    draw_text(t, x0, 1, ("Almonds %s" % __version__).center(MENU_WIDTH - 2))
     # Write options (and stats)
     # Mandelbrot position
     draw_option("Real", "{0:.13g}".format(params.mb_cx), u"$[←]$, $[→]$")
@@ -381,7 +381,7 @@ def main():
     with termbox.Termbox() as t:
 
         log = Logger()
-        log("$Welcome to Almonds v.%s$" % __version__)
+        log("$Welcome to Almonds %s$" % __version__)
 
         params = Params(log)
         plane = Plane()
@@ -533,7 +533,7 @@ def main():
 
     spent = (time.time() - begin) // 60
     print("\nYou spent %d minutes exploring fractals, see you soon :)\n" % spent)
-    print("- Almonds v.%s by Tenchi <tenchi@team2xh.net>\n" % __version__)
+    print("- Almonds %s by Tenchi <tenchi@team2xh.net>\n" % __version__)
 
 if __name__ == "__main__":
     p = multiprocessing.Pool(multiprocessing.cpu_count())
