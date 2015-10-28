@@ -1,8 +1,21 @@
-# Almonds
+<img width="395" alt="logo" src="misc/logo/logo.png">
 
-Terminal Mandelbrot fractal viewer, using [`termbox`](https://github.com/nsf/termbox) for easy `ncurses` like terminal graphics.
+Almonds: a terminal fractal viewer, using [`termbox`](https://github.com/nsf/termbox) for easy `ncurses` like terminal graphics.
 
 ---
+
+### Features
+
+- Fully fledged Mandelbrot viewer, in your terminal
+- Julia sets
+- Homemade terminal UI
+- 8 color ANSI mode with dithering
+- 256 color mode
+- Parallelized using `multiprocessing`
+- Multiple palettes, adaptive mode
+- Save and load capabilities
+- Available in standalone, source compatible with Python 2 & 3
+- Infinite fun from the comfort of your terminal
 
 ### Running
 
