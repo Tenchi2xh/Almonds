@@ -20,11 +20,33 @@ Using PyPy will make the hi-res captures faster, but the terminal navigation slo
 
 ### Screenshots
 
-<img width="1032" alt="screen shot 2015-10-15 at 21 12 23" src="https://cloud.githubusercontent.com/assets/4116708/10524783/9a51d0a8-7381-11e5-9847-d53ca0e74f6d.png">
-<img width="1550" alt="screen shot 2015-10-15 at 21 03 37" src="https://cloud.githubusercontent.com/assets/4116708/10524786/9d8526b2-7381-11e5-9d20-a376b3e7343c.png">
-![almonds_2015-10-15_21-03-40](https://cloud.githubusercontent.com/assets/4116708/10524793/a68abb82-7381-11e5-9bae-bd9768582c27.png)
-<img width="1004" alt="screen shot 2015-10-15 at 21 11 35" src="https://cloud.githubusercontent.com/assets/4116708/10524803/adc880e6-7381-11e5-9ef8-f6af71f67f0e.png">
-![almonds_2015-10-15_21-11-44](https://cloud.githubusercontent.com/assets/4116708/10524807/b2928018-7381-11e5-9120-d6af6efb839e.png)
+<img width="1053" alt="screen shot 2015-10-28 at 21 51 50" src="https://cloud.githubusercontent.com/assets/4116708/10803277/adec2722-7dc1-11e5-9599-a5e90bead5d8.png">
+<p align="center"><i>Mandelbrot in your terminal, now in 256 colors!</i></p>
+<br/><br/>
+
+<img width="1053" alt="screen shot 2015-10-28 at 21 56 13" src="https://cloud.githubusercontent.com/assets/4116708/10803276/ade76bce-7dc1-11e5-9b98-649215f1c56b.png">
+<p align="center"><i>Rendering a capture with the editor's light theme and 8-color dithered ANSI mode.</i></p>
+<br/><br/>
+
+<img width="1053" alt="screen shot 2015-10-28 at 22 06 42" src="https://cloud.githubusercontent.com/assets/4116708/10803279/aded968e-7dc1-11e5-8aed-cf61473a8d66.png">
+<p align="center"><i>Almonds in Julia mode. The load menu sports a very sophisticated scrollbar.</i></p>
+<br/><br/>
+
+<img width="1053" alt="screen shot 2015-10-28 at 22 02 26" src="https://cloud.githubusercontent.com/assets/4116708/10803278/adec2556-7dc1-11e5-8f0d-50975b6ac718.png">
+<p align="center"><i>Discovering a mini-brot. At this level of deep zoom, the adaptive palette mode is very handy.</i></p>
+<br/>
+
+### Renders
+
+![almonds_2015-10-18_02-11-52](https://cloud.githubusercontent.com/assets/4116708/10803285/b5b03b9c-7dc1-11e5-81a0-2e16503322f6.png)
+
+![almonds_2015-10-17_16-47-52](https://cloud.githubusercontent.com/assets/4116708/10803283/b58b99fe-7dc1-11e5-83c3-ef991ba7d0dc.png)
+
+![almonds_2015-10-28_22-08-20](https://cloud.githubusercontent.com/assets/4116708/10803284/b5a21fee-7dc1-11e5-93ee-f36621fa8544.png)
+
+![almonds_2015-10-28_19-49-27](https://cloud.githubusercontent.com/assets/4116708/10803286/b5b24aae-7dc1-11e5-88df-ed751518dcd0.png)
+
+![almonds_2015-10-18_01-51-37](https://cloud.githubusercontent.com/assets/4116708/10803287/b5b50f1e-7dc1-11e5-8c8b-76953178efcc.png)
 
 ### TODO
 
