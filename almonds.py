@@ -278,14 +278,33 @@ def capture(t, params):
     # All coordinates to be computed as single arguments for processes
     coords = [(x, y, w, h, params) for x in xrange(w) for y in xrange(h)]
 
-    # FIXME: Save values first then write them to picture, to optionally take the adaptive settings in consideration
-
+    results = []
     # Dispatch work to pool and draw results as they come in
     for i, result in enumerate(p.imap_unordered(compute_capture, coords, chunksize=256)):
-        pixels[result[0], result[1]] = get_color(result[2], params.max_iterations, palette)
+        results.append(result)
         if i % 2000 == 0:
             draw_progress_bar(t, "Capturing current scene...", i, w * h)
             t.present()
+
+    min_value = 0.0
+    max_value = params.max_iterations
+    max_iterations = params.max_iterations
+
+    if params.adaptive_palette:
+        from operator import itemgetter
+        min_value = min(results, key=itemgetter(2))[2]
+        max_value = max(results, key=itemgetter(2))[2]
+
+    # Draw pixels
+    for result in results:
+        value = result[2]
+        if params.adaptive_palette:
+            # Remap values from (min_value, max_value) to (0, max_iterations)
+            if max_value - min_value > 0:
+                value = ((value - min_value) / (max_value - min_value)) * max_iterations
+            else:
+                value = max_iterations
+        pixels[result[0], result[1]] = get_color(value, params.max_iterations, palette)
 
     if not os.path.exists("captures/"):
         os.makedirs("captures/")
