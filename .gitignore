@@ -10,3 +10,6 @@
 *.png
 /saves
 /captures
+/build
+/dist
+almonds.spec
