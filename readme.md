@@ -1,6 +1,6 @@
 <img width="395" alt="logo" src="misc/logo/logo.png">
 
-Almonds: a terminal fractal viewer, using [`termbox`](https://github.com/nsf/termbox) for easy `ncurses` like terminal graphics.
+Almonds: a terminal fractal viewer
 
 ---
 
@@ -21,7 +21,7 @@ Almonds: a terminal fractal viewer, using [`termbox`](https://github.com/nsf/ter
 
 Grab the latest binaries on the [releases page](https://github.com/Tenchi2xh/Almonds/releases/latest). These don't need Python or any library to be run.
 
-If you want to run the script from the source, you will need to install `termbox`, `PIL` (or `Pillow`), then run:
+If you want to run the script from the source, first install [`termbox`](https://github.com/nsf/termbox) and  [`Pillow`](https://github.com/python-pillow/Pillow), then run:
 
 ```
 $ python almonds.py
