@@ -21,7 +21,7 @@ Almonds: a terminal fractal viewer
 
 Grab the latest binaries on the [releases page](https://github.com/Tenchi2xh/Almonds/releases/latest). These don't need Python or any library to be run.
 
-If you want to run the script from the source, first install [`termbox`](https://github.com/nsf/termbox) and  [`Pillow`](https://github.com/python-pillow/Pillow), then run:
+If you want to run the script from the source, install [`Pillow`](https://github.com/python-pillow/Pillow), then run:
 
 ```
 $ python almonds.py
@@ -69,5 +69,5 @@ Using PyPy will make the hi-res captures faster, but the terminal navigation slo
 - Finish documenting
 - Separate options in two tabs ?
 - Press <kbd>SPACE</kbd> to hide log
-- New project idea: full-fledged python module for making `termbox` UI applications
+- New project idea: full-fledged python module for making `cursebox` UI applications
 - ANSI art logo, update quit message and add splash screen

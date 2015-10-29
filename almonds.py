@@ -111,7 +111,7 @@ def draw_panel(cb, params, plane):
     if params.crosshairs:
         crosshairs_coord = params.crosshairs_coord
 
-    # Draw all values in termbox
+    # Draw all values in cursebox
     for x in xs:
         for y in ys:
             value = (plane[x, y] + params.palette_offset) % (params.max_iterations + 1)
