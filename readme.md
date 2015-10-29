@@ -70,3 +70,4 @@ Using PyPy will make the hi-res captures faster, but the terminal navigation slo
 - Separate options in two tabs ?
 - Press <kbd>SPACE</kbd> to hide log
 - New project idea: full-fledged python module for making `termbox` UI applications
+- ANSI art logo, update quit message and add splash screen
