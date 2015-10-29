@@ -16,12 +16,13 @@ from PIL import Image
 from plane import Plane
 from graphics.option_menu import *
 from graphics.input_menu import *
+from graphics.splash_popup import *
 from mandelbrot import *
 from logger import *
 from params import *
 from utils import *
 
-__version__ = "1.15b"
+__version__ = "1.16b"
 
 MENU_WIDTH = 40
 
@@ -410,6 +411,9 @@ def main():
         if len(sys.argv) == 2:
             params = load(sys.argv[1])
 
+        popup = SplashPopup(t, splash, box=True)
+        popup.show()
+
         init_coords(t, params)
         update_display(t, params, plane)
 
@@ -532,8 +536,10 @@ def main():
                 update_display(t, params, plane)
 
     spent = (time.time() - begin) // 60
-    print("\nYou spent %d minutes exploring fractals, see you soon :)\n" % spent)
-    print("- Almonds %s by Tenchi <tenchi@team2xh.net>\n" % __version__)
+    spaces = " " * 26
+    print(splash)
+    print("%s%d minute%s exploring fractals, see you soon :)\n" % (spaces, spent, "s" if spent > 1 else ""))
+    print("%s- Almonds %s by Tenchi <tenchi@team2xh.net>\n" % (spaces, __version__))
 
 if __name__ == "__main__":
     p = multiprocessing.Pool(multiprocessing.cpu_count())
