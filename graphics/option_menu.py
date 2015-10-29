@@ -2,14 +2,12 @@
 
 from __future__ import division
 
-import termbox
-
 from .drawing import *
 
 
 class OptionMenu(object):
-    def __init__(self, t, options, title=""):
-        self.t = t
+    def __init__(self, cb, options, title=""):
+        self.cb = cb
 
         self.title = title
         self.options = options
@@ -25,20 +23,16 @@ class OptionMenu(object):
         self.draw_menu()
 
         while self.open:
-            event = self.t.poll_event()
-            while event:
-                (kind, ch, key, mod, w, h, x, y) = event
-                if kind == termbox.EVENT_KEY and key == termbox.KEY_ESC:
-                    self.selected = -1
-                    self.open = False
-                if kind == termbox.EVENT_KEY:
-                    if key == termbox.KEY_ARROW_UP:
-                        self.selected = (self.selected - 1) % len(self.options)
-                    elif key == termbox.KEY_ARROW_DOWN:
-                        self.selected = (self.selected + 1) % len(self.options)
-                    elif key == termbox.KEY_ENTER:
-                        self.open = False
-                event = self.t.peek_event()
+            event = self.cb.poll_event()
+            if event == "ESC":
+                self.selected = -1
+                self.open = False
+            elif event == "UP":
+                self.selected = (self.selected - 1) % len(self.options)
+            elif event == "DOWN":
+                self.selected = (self.selected + 1) % len(self.options)
+            elif event == "ENTER":
+                self.open = False
 
             if self.open:
                 self.draw_menu()
@@ -49,7 +43,7 @@ class OptionMenu(object):
         self.update_dimensions()
 
         # Clear
-        fill(self.t, self.x0 + 1, self.y0 + 1, self.width - 2, self.height - 2, 32)
+        fill(self.cb, self.x0 + 1, self.y0 + 1, self.width - 2, self.height - 2, " ")
 
         offset_y = 0  # Vertical offset if a title is present
         offset_x = 0  # Horizontal negative offset if a scroll bar is present
@@ -60,10 +54,10 @@ class OptionMenu(object):
             offset_y = 2
             h_seps.append(2)
         # Draw box, with eventual separator
-        draw_box(self.t, self.x0, self.y0, self.width, self.height, h_seps=h_seps)
+        draw_box(self.cb, self.x0, self.y0, self.width, self.height, h_seps=h_seps)
 
         # Centered title
-        draw_text(self.t, self.x0 + 1, self.y0 + 1, " " * ((self.width - 2 - len(self.title)) // 2) + self.title)
+        draw_text(self.cb, self.x0 + 1, self.y0 + 1, " " * ((self.width - 2 - len(self.title)) // 2) + self.title)
 
         # Figure out if we need to limit the view due to too many options
         view = self.options
@@ -93,19 +87,19 @@ class OptionMenu(object):
             if y == self.selected - offset_selected:                    # If it's the selected option,
                 text = "$" + text                                       # highlight using custom markup
 
-            draw_text(self.t, self.x0 + 1, self.y0 + offset_y + y + 1, text)
+            draw_text(self.cb, self.x0 + 1, self.y0 + offset_y + y + 1, text)
 
         # Draw scrollbar if present
         if offset_x != 0:
-            draw_scroll_bar(self.t, self.x0 + self.width - 2, self.y0 + 1 + offset_y, self.height - 2 - offset_y,
+            draw_scroll_bar(self.cb, self.x0 + self.width - 2, self.y0 + 1 + offset_y, self.height - 2 - offset_y,
                             max_items, len(self.options), self.selected)
 
-        self.t.present()
+        self.cb.present()
 
     def update_dimensions(self):
         # Prevent menu from taking the whole screen
-        max_width = 2 * self.t.width() // 5
-        max_height = 2 * self.t.height() // 3
+        max_width = 2 * self.cb.width // 5
+        max_height = 2 * self.cb.height // 3
 
         longest = len(max(self.options, key=len))
         # Fit menu to option lengths if small enough, else use proportions
@@ -120,5 +114,5 @@ class OptionMenu(object):
             self.width += 1
 
         # Center the menu
-        self.x0 = (self.t.width() - self.width) // 2
-        self.y0 = (self.t.height() - self.height) // 2
+        self.x0 = (self.cb.width - self.width) // 2
+        self.y0 = (self.cb.height - self.height) // 2

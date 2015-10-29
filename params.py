@@ -75,4 +75,4 @@ class Params(object):
         self.plane_ratio = CHAR_RATIO * w / h
 
         if self.crosshairs:
-            self.crosshairs_coord = (w // 2, h // 2)
+            self.crosshairs_coord = ((w + 2) // 2, (h + 2) // 2)

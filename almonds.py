@@ -9,10 +9,10 @@ import sys
 import textwrap
 import multiprocessing
 import subprocess
-import termbox
 
 from PIL import Image
 
+from cursebox import *
 from plane import Plane
 from graphics.option_menu import *
 from graphics.input_menu import *
@@ -22,7 +22,7 @@ from logger import *
 from params import *
 from utils import *
 
-__version__ = "1.16b"
+__version__ = "1.18b"
 
 MENU_WIDTH = 40
 
@@ -42,19 +42,19 @@ def compute_capture(args):
     return x, y, mandelbrot_capture(x, y, w, h, params)
 
 
-def draw_panel(t, params, plane):
+def draw_panel(cb, params, plane):
     """
     Draws the application's main panel, displaying the current Mandelbrot view.
 
-    :param t: Termbox instance.
-    :type t: termbox.Termbox
+    :param cb: Cursebox instance.
+    :type cb: cursebox.Cursebox
     :param params: Current application parameters.
     :type params: params.Params
     :param plane: Plane containing the current Mandelbrot values.
     :type plane: plane.Plane
     """
-    w = t.width() - MENU_WIDTH - 1
-    h = t.height() - 1
+    w = cb.width - MENU_WIDTH - 1
+    h = cb.height - 1
 
     params.plane_w = w
     params.plane_h = h
@@ -91,8 +91,8 @@ def draw_panel(t, params, plane):
             plane[result[0], result[1]] = result[2]
             if time.time() - start > 2:
                 if i % 200 == 0:
-                    draw_progress_bar(t, "Render is taking a longer time...", i, len(missing_coords))
-                    t.present()
+                    draw_progress_bar(cb, "Render is taking a longer time...", i, len(missing_coords))
+                    cb.present()
 
     if generated > 0:
         params.log("Added %d missing cells" % generated)
@@ -124,38 +124,38 @@ def draw_panel(t, params, plane):
 
             # Dithered mode
             if params.dither_type < 2:
-                draw_dithered_color(t, x - params.plane_x0 + 1,
+                draw_dithered_color(cb, x - params.plane_x0 + 1,
                                            y - params.plane_y0 + 1,
                                            palette, params.dither_type,
                                            value, max_iterations,
                                            crosshairs_coord=crosshairs_coord)
             # 256 colors mode
             else:
-                draw_color(t, x - params.plane_x0 + 1,
+                draw_color(cb, x - params.plane_x0 + 1,
                               y - params.plane_y0 + 1,
                               value, max_iterations, palette,
                               crosshairs_coord=crosshairs_coord)
 
     # Draw bounding box
-    draw_box(t, 0, 0, w + 1, h + 1)
+    draw_box(cb, 0, 0, w + 1, h + 1)
 
 
-def draw_menu(t, params):
+def draw_menu(cb, params):
     """
     Draws the application's side menu and options.
 
-    :param t: Termbox instance.
-    :type t: termbox.Termbox
+    :param cb: Cursebox instance.
+    :type cb: cursebox.Cursebox
     :param params: Current application parameters.
     :type params: params.Params
     """
-    w = t.width()
-    h = t.height()
+    w = cb.width
+    h = cb.height
 
     x0 = w - MENU_WIDTH + 1
 
     # Clear buffer inside the box
-    fill(t, x0, 1, MENU_WIDTH, h - 2, 32)
+    fill(cb, x0, 1, MENU_WIDTH, h - 2, " ")
 
     def draw_option(key, value, shortcuts):
         """
@@ -166,14 +166,14 @@ def draw_menu(t, params):
         :param shortcuts: Keyboard shortcut keys.
         :return:
         """
-        draw_text(t, x0 + 1, 2 + draw_option.counter,
+        draw_text(cb, x0 + 1, 2 + draw_option.counter,
                   "%s %s %s" % (key, str(value).rjust(MENU_WIDTH - 14 - len(key)), shortcuts))
         draw_option.counter += 1
     draw_option.counter = 1
 
     h_seps = [2]
     # Draw title
-    draw_text(t, x0, 1, ("Almonds %s" % __version__).center(MENU_WIDTH - 2))
+    draw_text(cb, x0, 1, ("Almonds %s" % __version__).center(MENU_WIDTH - 2))
     # Write options (and stats)
     # Mandelbrot position
     draw_option("Real", "{0:.13g}".format(params.mb_cx), u"$[←]$, $[→]$")
@@ -206,38 +206,38 @@ def draw_menu(t, params):
 
     # Draw box with separators
     middle = 3 + draw_option.counter
-    draw_box(t, w - MENU_WIDTH, 0, MENU_WIDTH, h, h_seps=h_seps + [middle - 1, middle + 1])
+    draw_box(cb, w - MENU_WIDTH, 0, MENU_WIDTH, h, h_seps=h_seps + [middle - 1, middle + 1])
 
     # Draw log
-    draw_text(t, x0, middle, "Event log".center(MENU_WIDTH - 2))
+    draw_text(cb, x0, middle, "Event log".center(MENU_WIDTH - 2))
     latest_logs = params.log.get_latest(h - middle)
     latest_logs = map(lambda l: textwrap.wrap(l, MENU_WIDTH - 4)[::-1], latest_logs)  # Wrap all messages
     latest_logs = [l for ls in latest_logs for l in ls]                               # Flatten [[str]] -> [str]
     i = h - 2
     for l in latest_logs:
-        draw_text(t, x0 + 1, i, l)
+        draw_text(cb, x0 + 1, i, l)
         i -= 1
         if i == middle + 1:
             break
 
 
-def update_display(t, params, plane):
+def update_display(cb, params, plane):
     """
     Draws everything.
 
-    :param t: Termbox instance.
-    :type t: termbox.Termbox
+    :param cb: Cursebox instance.
+    :type cb: cursebox.Cursebox
     :param params: Current application parameters.
     :type params: params.Params
     :param plane: Plane containing the current Mandelbrot values.
     :type plane: plane.Plane
     :return:
     """
-    t.clear()
-    draw_panel(t, params, plane)
+    cb.clear()
+    draw_panel(cb, params, plane)
     update_position(params)  # Update Mandelbrot-space coordinates before drawing them
-    draw_menu(t, params)
-    t.present()
+    draw_menu(cb, params)
+    cb.present()
 
 
 def save(params):
@@ -260,12 +260,12 @@ def save(params):
         params.log("Current scene saved!")
 
 
-def capture(t, params):
+def capture(cb, params):
     """
     Renders and saves a screen-sized picture of the current position.
 
-    :param t: Termbox instance.
-    :type t: termbox.Termbox
+    :param cb: Cursebox instance.
+    :type cb: cursebox.Cursebox
     :param params: Current application parameters.
     :type params: params.Params
     """
@@ -295,8 +295,8 @@ def capture(t, params):
     for i, result in enumerate(p.imap_unordered(compute_capture, coords, chunksize=256)):
         results.append(result)
         if i % 2000 == 0:
-            draw_progress_bar(t, "Capturing current scene...", i, w * h)
-            t.present()
+            draw_progress_bar(cb, "Capturing current scene...", i, w * h)
+            cb.present()
 
     min_value = 0.0
     max_value = params.max_iterations
@@ -333,12 +333,12 @@ def capture(t, params):
         pass
 
 
-def cycle(t, params, plane):
+def cycle(cb, params, plane):
     """
     Fun function to do a palette cycling animation.
 
-    :param t: Termbox instance.
-    :type t: termbox.Termbox
+    :param cb: Cursebox instance.
+    :type cb: cursebox.Cursebox
     :param params: Current application parameters.
     :type params: params.Params
     :param plane: Plane containing the current Mandelbrot values.
@@ -350,25 +350,25 @@ def cycle(t, params, plane):
         step = 1
     for i in xrange(0, params.max_iterations, step):
         params.palette_offset = i
-        draw_panel(t, params, plane)
-        t.present()
+        draw_panel(cb, params, plane)
+        cb.present()
     params.palette_offset = 0
 
 
-def init_coords(t, params):
+def init_coords(cb, params):
     """
     Initializes coordinates and zoom for first use.
 
     Loads coordinates from Mandelbrot-space.
 
-    :param t: Termbox instance.
-    :type t: termbox.Termbox
+    :param cb: Cursebox instance.
+    :type cb: cursebox.Cursebox
     :param params: Current application parameters.
     :type params: params.Params
     :return:
     """
-    w = t.width() - MENU_WIDTH - 1
-    h = t.height() - 1
+    w = cb.width - MENU_WIDTH - 1
+    h = cb.height - 1
 
     params.plane_w = w
     params.plane_h = h
@@ -379,17 +379,13 @@ def init_coords(t, params):
 
 def main():
     begin = time.time()
-    with termbox.Termbox() as t:
+    with Cursebox() as cb:
 
         log = Logger()
         log("$Welcome to Almonds %s$" % __version__)
 
         params = Params(log)
         plane = Plane()
-        if params.dither_type == 2:
-            colors.select_output_mode(termbox.OUTPUT_256)
-            t.select_output_mode(termbox.OUTPUT_256)
-            colors.toggle_bright()
 
         def load(path):
             if sys.version_info.major > 2:
@@ -401,139 +397,123 @@ def main():
             with open(path, "rb") as f:
                 params = cPickle.load(f)
                 params.log = log
-                if params.dither_type == 2:
-                    colors.select_output_mode(termbox.OUTPUT_256)
-                    t.select_output_mode(termbox.OUTPUT_256)
-                    colors.toggle_bright()
                 log("Save loaded!")
                 return params
 
         if len(sys.argv) == 2:
             params = load(sys.argv[1])
 
-        popup = SplashPopup(t, splash, box=True)
+        popup = SplashPopup(cb, splash, box=True)
         popup.show()
 
-        init_coords(t, params)
-        update_display(t, params, plane)
+        init_coords(cb, params)
+        update_display(cb, params, plane)
 
         running = True
         while running:
-            event = t.poll_event()
-            while event:
-                (kind, ch, key, mod, w, h, x, y) = event
-                if kind == termbox.EVENT_RESIZE:
-                    plane.reset()
-                if ch is not None:
-                    ch = ch.lower()
-                if kind == termbox.EVENT_KEY and key in (termbox.KEY_ESC, termbox.KEY_CTRL_C):
-                    running = False
-                if kind == termbox.EVENT_KEY:
-                    # Navigation
-                    if key == termbox.KEY_ARROW_UP:
-                        params.plane_y0 -= 1 * params.move_speed
-                    elif key == termbox.KEY_ARROW_DOWN:
-                        params.plane_y0 += 1 * params.move_speed
-                    elif key == termbox.KEY_ARROW_LEFT:
-                        params.plane_x0 -= int(2 * params.move_speed)
-                    elif key == termbox.KEY_ARROW_RIGHT:
-                        params.plane_x0 += int(2 * params.move_speed)
-                    # Move speed
-                    elif ch == "c":
-                        params.move_speed += 1
-                    elif ch == "v":
-                        params.move_speed -= 1
-                        if params.move_speed == 0:
-                            params.move_speed = 1
-                    # Manual input
-                    elif key == termbox.KEY_ENTER:
-                        menu = InputMenu(t, ["* Real (X)", "* Imaginary (Y)", "  Zoom", "  Iterations"],
-                                         "Input manual coordinates")
-                        r, values = menu.show()
-                        if r >= 0:
-                            try:
-                                new_mb_cx = float(values[0])
-                                new_mb_cy = float(values[1])
-                                new_zoom = params.zoom
-                                new_iterations = params.max_iterations
-                                try:
-                                    new_zoom = float(values[2])
-                                    new_iterations = int(values[3])
-                                except ValueError:
-                                    pass
-                                params.mb_cx = new_mb_cx
-                                params.mb_cy = new_mb_cy
-                                params.zoom = new_zoom
-                                params.max_iterations = new_iterations
-                                init_coords(t, params)
-                                plane.reset()
-                            except ValueError:
-                                params.log("Given coordinates are not floating numbers")
-                    # Zoom / un-zoom
-                    elif ch == "z":
-                        zoom(params, 1.3)
-                        plane.reset()
-                    elif ch == "u":
-                        zoom(params, 1 / 1.3)
-                        plane.reset()
-                    # Iterations control
-                    elif ch == "i":
-                        params.max_iterations += 10
-                        plane.reset()
-                    elif ch == "o":
-                        params.max_iterations -= 10
-                        if params.max_iterations <= 0:
-                            params.max_iterations = 10
-                        else:
-                            plane.reset()
-                    # Palette swap
-                    elif ch == "p":
-                        params.palette = (params.palette + 1) % len(PALETTES)
-                    elif ch == "d":
-                        params.dither_type = (params.dither_type + 1) % len(DITHER_TYPES)
-                        if params.dither_type == 2:
-                            colors.select_output_mode(termbox.OUTPUT_256)
-                            t.select_output_mode(termbox.OUTPUT_256)
-                            colors.toggle_bright()
-                        else:
-                            colors.select_output_mode(termbox.OUTPUT_NORMAL)
-                            t.select_output_mode(termbox.OUTPUT_NORMAL)
-                    elif ch == "r":
-                        params.reverse_palette = not params.reverse_palette
-                    # Misc
-                    elif ch == "s":
-                        save(params)
-                    elif ch == "l":
-                        if not os.path.exists("saves/"):
-                            log("No saved states present")
-                        else:
-                            options = os.listdir("saves/")
-                            menu = OptionMenu(t, options, "Load save")
-                            n = menu.show()
-                            if n >= 0:
-                                params = load("saves/" + options[n])
-                                init_coords(t, params)
-                                plane.reset()
-                            else:
-                                log("Load canceled")
-                    elif ch == "h":
-                        capture(t, params)
-                    elif ch == "y":
-                        cycle(t, params, plane)
-                    elif ch == "t":
-                        colors.toggle_dark()
-                    elif ch == "a":
-                        params.adaptive_palette = not params.adaptive_palette
-                    elif ch == "j":
-                        params.toggle_julia()
-                        init_coords(t, params)
-                        plane.reset()
-                    elif ch == "x":
-                        params.crosshairs = not params.crosshairs
+            event = cb.poll_event().upper()
 
-                event = t.peek_event()
+            if event == "RESIZE":
+                plane.reset()
+            elif event in ("ESC", "CTRL+C"):
+                running = False
+            # Navigation
+            elif event == "UP":
+                params.plane_y0 -= 1 * params.move_speed
+            elif event == "DOWN":
+                params.plane_y0 += 1 * params.move_speed
+            elif event == "LEFT":
+                params.plane_x0 -= int(2 * params.move_speed)
+            elif event == "RIGHT":
+                params.plane_x0 += int(2 * params.move_speed)
+            # Move speed
+            elif event == "C":
+                params.move_speed += 1
+            elif event == "V":
+                params.move_speed -= 1
+                if params.move_speed == 0:
+                    params.move_speed = 1
+            # Manual input
+            elif event == "ENTER":
+                menu = InputMenu(cb, ["* Real (X)", "* Imaginary (Y)", "  Zoom", "  Iterations"],
+                                 "Input manual coordinates")
+                r, values = menu.show()
+                if r >= 0:
+                    try:
+                        new_mb_cx = float(values[0])
+                        new_mb_cy = float(values[1])
+                        new_zoom = params.zoom
+                        new_iterations = params.max_iterations
+                        try:
+                            new_zoom = float(values[2])
+                            new_iterations = int(values[3])
+                        except ValueError:
+                            pass
+                        params.mb_cx = new_mb_cx
+                        params.mb_cy = new_mb_cy
+                        params.zoom = new_zoom
+                        params.max_iterations = new_iterations
+                        init_coords(cb, params)
+                        plane.reset()
+                    except ValueError:
+                        params.log("Given coordinates are not floating numbers")
+            # Zoom / un-zoom
+            elif event == "Z":
+                zoom(params, 1.3)
+                plane.reset()
+            elif event == "U":
+                zoom(params, 1 / 1.3)
+                plane.reset()
+            # Iterations control
+            elif event == "I":
+                params.max_iterations += 10
+                plane.reset()
+            elif event == "O":
+                params.max_iterations -= 10
+                if params.max_iterations <= 0:
+                    params.max_iterations = 10
+                else:
+                    plane.reset()
+            # Palette swap
+            elif event == "P":
+                params.palette = (params.palette + 1) % len(PALETTES)
+            elif event == "D":
+                params.dither_type = (params.dither_type + 1) % len(DITHER_TYPES)
+            elif event == "R":
+                params.reverse_palette = not params.reverse_palette
+            # Misc
+            elif event == "S":
+                save(params)
+            elif event == "L":
+                if not os.path.exists("saves/"):
+                    log("No saved states present")
+                else:
+                    options = os.listdir("saves/")
+                    menu = OptionMenu(cb, options, "Load save")
+                    n = menu.show()
+                    if n >= 0:
+                        params = load("saves/" + options[n])
+                        init_coords(cb, params)
+                        plane.reset()
+                    else:
+                        log("Load canceled")
+            elif event == "H":
+                capture(cb, params)
+            elif event == "Y":
+                cycle(cb, params, plane)
+            elif event == "T":
+                colors.toggle_dark()
+            elif event == "A":
+                params.adaptive_palette = not params.adaptive_palette
+            elif event == "J":
+                params.toggle_julia()
+                init_coords(cb, params)
+                plane.reset()
+            elif event == "X":
+                params.crosshairs = not params.crosshairs
+
             if running:
-                update_display(t, params, plane)
+                update_display(cb, params, plane)
 
     spent = (time.time() - begin) // 60
     spaces = " " * 26

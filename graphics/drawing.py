@@ -3,7 +3,6 @@
 from __future__ import division
 
 import math
-import termbox
 import sys
 
 from .colors import colors
@@ -13,24 +12,24 @@ if sys.version_info.major > 2:
 
 # Box drawing symbols
 
-BOX_TOP_LEFT     = ord(u"┌")
-BOX_TOP_RIGHT    = ord(u"┐")
-BOX_BOTTOM_LEFT  = ord(u"└")
-BOX_BOTTOM_RIGHT = ord(u"┘")
+BOX_TOP_LEFT     = u"┌"
+BOX_TOP_RIGHT    = u"┐"
+BOX_BOTTOM_LEFT  = u"└"
+BOX_BOTTOM_RIGHT = u"┘"
 BOX_CORNERS      = [BOX_TOP_LEFT, BOX_TOP_RIGHT, BOX_BOTTOM_LEFT, BOX_BOTTOM_RIGHT]
 
-BOX_HORIZONTAL   = ord(u"─")
-BOX_VERTICAL     = ord(u"│")
+BOX_HORIZONTAL   = u"─"
+BOX_VERTICAL     = u"│"
 
-BOX_X_LEFT       = ord(u"├")
-BOX_X_RIGHT      = ord(u"┤")
-BOX_X_TOP        = ord(u"┬")
-BOX_X_BOTTOM     = ord(u"┴")
-BOX_X_MIDDLE     = ord(u"┼")
+BOX_X_LEFT       = u"├"
+BOX_X_RIGHT      = u"┤"
+BOX_X_TOP        = u"┬"
+BOX_X_BOTTOM     = u"┴"
+BOX_X_MIDDLE     = u"┼"
 
-MARGIN_WHOLE = ord(u"│")
-MARGIN_HALF  = ord(u"╵")
-MARGIN_TENTH = ord(u"╷")
+MARGIN_WHOLE = u"│"
+MARGIN_HALF  = u"╵"
+MARGIN_TENTH = u"╷"
 
 
 # Block drawing symbols
@@ -87,13 +86,13 @@ def dither_symbol(value, dither):
     :return: dithered symbol representing that intensity
     """
     dither = DITHER_TYPES[dither][1]
-    return ord(dither[int(round(value * (len(dither) - 1)))])
+    return dither[int(round(value * (len(dither) - 1)))]
 
 
-def draw_dithered_color(t, x, y, palette, dither, n, n_max, crosshairs_coord=None):
+def draw_dithered_color(cb, x, y, palette, dither, n, n_max, crosshairs_coord=None):
     """
     Draws a dithered color block on the terminal, given a palette.
-    :type t: termbox.Termbox
+    :type cb: cursebox.CurseBox
     """
     i = n * (len(palette) - 1) / n_max
     c1 = palette[int(math.floor(i))]
@@ -107,7 +106,7 @@ def draw_dithered_color(t, x, y, palette, dither, n, n_max, crosshairs_coord=Non
         symbol, crosshairs = get_crosshairs_symbol(x, y, old_symbol, crosshairs_coord)
         if crosshairs:
             sorted_palette = sort_palette(palette)
-            if old_symbol == ord(DITHER_TYPES[dither][1][0]):
+            if old_symbol == DITHER_TYPES[dither][1][0]:
                 c2 = c1
             sorted_index = sorted_palette.index(c2)
             if sorted_index > len(sorted_palette) // 2:
@@ -115,19 +114,19 @@ def draw_dithered_color(t, x, y, palette, dither, n, n_max, crosshairs_coord=Non
             else:
                 c1 = sorted_palette[-1]
 
-    t.change_cell(x, y, symbol, c1(), c2())
+    cb.change_cell(x, y, symbol, c1(), c2())
 
 
-def draw_color(t, x, y, value, max_iterations, palette, crosshairs_coord=None):
+def draw_color(cb, x, y, value, max_iterations, palette, crosshairs_coord=None):
     bg = get_color(value, max_iterations, palette)
-    symbol = 32
+    symbol = " "
     fg = colors.black()
     if crosshairs_coord is not None:
         symbol, crosshairs = get_crosshairs_symbol(x, y, symbol, crosshairs_coord)
         if crosshairs:
             fg = colors.to_xterm((255 - bg[0], 255 - bg[1], 255 - bg[2]))
 
-    t.change_cell(x, y, symbol, fg, colors.to_xterm(bg))
+    cb.change_cell(x, y, symbol, fg, colors.to_xterm(bg))
 
 
 def get_crosshairs_symbol(x, y, symbol, crosshairs_coord):
@@ -146,21 +145,10 @@ def get_crosshairs_symbol(x, y, symbol, crosshairs_coord):
     return symbol, crosshairs
 
 
-# FIXME: Consider dither type 2 (256 colors)
-def draw_gradient(t, x0, y0, w, h, palette, dither):
-    """
-    Test function that draws a gradient in the given rect.
-    :type t: termbox.Termbox
-    """
-    for x in xrange(w - 1):
-        for y in xrange(h - 1):
-            draw_dithered_color(t, x0 + x, y0 + y, palette, dither, x, w - 1)
-
-
-def draw_box(t, x0, y0, w, h, fg=colors.default_fg, bg=colors.default_bg, h_seps=[], v_seps=[]):
+def draw_box(cb, x0, y0, w, h, fg=colors.default_fg, bg=colors.default_bg, h_seps=[], v_seps=[]):
     """
     Draws a box in the given terminal.
-    :type t: termbox.Termbox
+    :type cb: cursebox.CurseBox
     """
     w -= 1
     h -= 1
@@ -170,47 +158,47 @@ def draw_box(t, x0, y0, w, h, fg=colors.default_fg, bg=colors.default_bg, h_seps
     bg = bg()
 
     for i, c in enumerate(corners):
-        t.change_cell(c[0], c[1], BOX_CORNERS[i], fg, bg)
+        cb.change_cell(c[0], c[1], BOX_CORNERS[i], fg, bg)
     for x in xrange(1, w):
         for s in h_seps + [0, h]:
-            t.change_cell(x0 + x, y0 + s, BOX_HORIZONTAL, fg, bg)
+            cb.change_cell(x0 + x, y0 + s, BOX_HORIZONTAL, fg, bg)
     for y in xrange(1, h):
         for s in v_seps + [0, w]:
-            t.change_cell(x0 + s, y0 + y, BOX_VERTICAL, fg, bg)
+            cb.change_cell(x0 + s, y0 + y, BOX_VERTICAL, fg, bg)
     for s in h_seps:
-        t.change_cell(x0,     y0 + s, BOX_X_LEFT,  fg, bg)
-        t.change_cell(x0 + w, y0 + s, BOX_X_RIGHT, fg, bg)
+        cb.change_cell(x0,     y0 + s, BOX_X_LEFT,  fg, bg)
+        cb.change_cell(x0 + w, y0 + s, BOX_X_RIGHT, fg, bg)
     for s in v_seps:
-        t.change_cell(x0 + s, y0,     BOX_X_TOP,    fg, bg)
-        t.change_cell(x0 + s, y0 + h, BOX_X_BOTTOM, fg, bg)
+        cb.change_cell(x0 + s, y0,     BOX_X_TOP,    fg, bg)
+        cb.change_cell(x0 + s, y0 + h, BOX_X_BOTTOM, fg, bg)
 
 
-def draw_progress_bar(t, message, value, max_value):
+def draw_progress_bar(cb, message, value, max_value):
     """
-    :type t: termbox.Termbox
+    :type cb: cursebox.Cursebox
     """
-    m_x = t.width() // 2
-    m_y = t.height() // 2
+    m_x = cb.width // 2
+    m_y = cb.height // 2
     w = len(message) + 4
     h = 3
-    draw_box(t, m_x - w // 2, m_y - 1, w, h)
+    draw_box(cb, m_x - w // 2, m_y - 1, w, h)
     message = " %s " % message
     i = int((value / max_value) * (len(message) + 2))
     message = "$" + message[:i] + "$" + message[i:]
-    draw_text(t, m_x - w // 2 + 1, m_y, message)
+    draw_text(cb, m_x - w // 2 + 1, m_y, message)
 
 
-def draw_scroll_bar(t, x0, y0, h, n_visible, n_items, position, fg=colors.default_fg, bg=colors.default_bg):
+def draw_scroll_bar(cb, x0, y0, h, n_visible, n_items, position, fg=colors.default_fg, bg=colors.default_bg):
     knob_height = int(h * n_visible / n_items)
     knob_position = int((h - knob_height) * position / n_items)
     knob_end = knob_position + knob_height
 
     for y in xrange(h):
-        symbol = ord(u"█") if knob_position <= y <= knob_end else ord(u"░")
-        t.change_cell(x0, y0 + y, symbol, fg(), bg())
+        symbol = u"█" if knob_position <= y <= knob_end else u"░"
+        cb.change_cell(x0, y0 + y, symbol, fg(), bg())
 
 
-def draw_text(t, x0, y0, string, fg=colors.default_fg, bg=colors.default_bg):
+def draw_text(cb, x0, y0, string, fg=colors.default_fg, bg=colors.default_bg):
     markup_compensation = 0
     fg = fg()
     bg = bg()
@@ -219,13 +207,13 @@ def draw_text(t, x0, y0, string, fg=colors.default_fg, bg=colors.default_bg):
             fg, bg = bg, fg
             markup_compensation += 1
             continue
-        t.change_cell(x0 + i - markup_compensation, y0, ord(c), fg, bg)
+        cb.change_cell(x0 + i - markup_compensation, y0, c, fg, bg)
 
 
-def fill(t, x0, y0, w, h, symbol, fg=colors.default_fg, bg=colors.default_bg):
+def fill(cb, x0, y0, w, h, symbol, fg=colors.default_fg, bg=colors.default_bg):
     for x in xrange(w):
         for y in xrange(h):
-            t.change_cell(x0 + x, y0 + y, symbol, fg(), bg())
+            cb.change_cell(x0 + x, y0 + y, symbol, fg(), bg())
 
 
 def interpolate(c1, c2, factor):

@@ -2,14 +2,15 @@
 
 import curses
 
-from cursebox import CurseBox
+from .cursebox import Cursebox
 
-with CurseBox() as cb:
+
+with Cursebox() as cb:
     cb.hide_cursor()
 
     try:
-        for i in range(20):
-            cb.change_cell(i, i // 3, ord("X"), i, 255 - i)
+        for i in range(255):
+            cb.change_cell(i % cb.width, i % cb.height, str(i), i, -1)
     except curses.ERR:
         # End of screen reached
         pass
