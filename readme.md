@@ -19,15 +19,14 @@ Almonds: a terminal fractal viewer
 
 ### Running
 
-Grab the latest binaries on the [releases page](https://github.com/Tenchi2xh/Almonds/releases/latest). These don't need Python or any library to be run.
-
-If you want to run the script from the source, install [`Pillow`](https://github.com/python-pillow/Pillow), then run:
+Just run:
 
 ```
+$ pip install Pillow
 $ python almonds.py
 ```
 
-On Windows, Almonds only works using [`mintty`](https://mintty.github.io/) ([`babun`](http://babun.github.io/) is recommended)
+On Windows, Almonds only works using cygwin and [`mintty`](https://mintty.github.io/) ([`babun`](http://babun.github.io/) is recommended).
 
 The font [Envy Code R](https://damieng.com/blog/2008/05/26/envy-code-r-preview-7-coding-font-released) is *highly* recommended. If your terminal emulator supports it, try to reduce the line spacing so that the box drawing characters touch. When using another font, if the appearance of the fractal seems squashed, try to adjust the constant `CHAR_RATIO` in `params.py`.
 
@@ -65,7 +64,6 @@ Using PyPy will make the hi-res captures faster, but the terminal navigation slo
 
 ### TODO
 
-- Find way to build distributable on Windows
 - Finish documenting
 - Separate options in two tabs ?
 - Press <kbd>SPACE</kbd> to hide log
