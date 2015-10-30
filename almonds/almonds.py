@@ -529,6 +529,7 @@ def main(pool, ratio, qwertz, savefile):
     if not(is_native_windows()):
         print("\n".join(splash))
     else:
+        spaces = ""
         print()
     print("%s%d minute%s exploring fractals, see you soon :)\n" % (spaces, spent, "s" if spent > 1 else ""))
     print("%s- Almonds %s by Tenchi <tenchi@team2xh.net>" % (spaces, __version__))
