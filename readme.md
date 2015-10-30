@@ -1,6 +1,12 @@
-<img width="395" alt="logo" src="misc/logo/logo.png">
+<p align="center"><img width="395" alt="logo" src="misc/logo/logo.png"></p>
 
-Almonds: a terminal fractal viewer
+---
+
+- [Features](#features)
+- [Running](#running)
+- [Controls](#controls)
+- [Screenshots](#screenshots)
+- [Renders](#renders)
 
 ---
 
@@ -40,6 +46,28 @@ On Windows, download the `curses` module from the [Unofficial Windows Binaries f
 The font [Envy Code R](https://damieng.com/blog/2008/05/26/envy-code-r-preview-7-coding-font-released) is *highly* recommended. If your terminal emulator supports it, try to reduce the line spacing so that the box drawing characters touch. When using another font, if the appearance of the fractal seems squashed, try to adjust the constant `CHAR_RATIO` in `params.py`.
 
 Using PyPy will make the hi-res captures faster, but the terminal navigation slower.
+
+### Controls
+
+Keys | Action
+:---:|:------
+<kbd>↑</kbd>, <kbd>↓</kbd>, <kbd>←</kbd>, <kbd>→</kbd> | Move around
+<kbd>C</kbd>, <kbd>V</kbd> | Adjust move speed
+<kbd>⏎</kbd> | Input manual coordinates
+<kbd>Z</kbd>, <kbd>U</kbd> | Zoom / Un-zoom
+<kbd>I</kbd>, <kbd>O</kbd> | Increase / Decrase number of iterations
+<kbd>J</kbd> | Enter / Leave Julia set 
+<kbd>P</kbd> | Next palette
+<kbd>D</kbd> | Color mode (256 colors / 8 colors ANSI / 8 colors ASCII)
+<kbd>R</kbd> | Reverse palette order
+<kbd>A</kbd> | Palette mode (Normal / Adaptive)
+<kbd>Y</kbd> | Launch palette cycling animation
+<kbd>H</kbd> | Capture current view in a high-resolution PNG file
+<kbd>X</kbd> | Show / Hide crosshairs
+<kbd>T</kbd> | Toggle UI theme (Dark / Light)
+<kbd>S</kbd> | Save all current settings and view
+<kbd>L</kbd> | Load a previous save
+<kbd>ESC</kbd>, <kbd>CTRL</kbd>+<kbd>C</kbd> | Exit
 
 ### Screenshots
 
