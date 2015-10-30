@@ -4,7 +4,7 @@ import collections
 import curses
 import os
 
-MAX_PAIRS = 32767
+from constants import *
 
 
 class Pairs(object):
@@ -70,29 +70,29 @@ class Cursebox(object):
         ch = self.screen.getch()
 
         if ch == 27:
-            return "ESC"
+            return EVENT_ESC
         elif ch == -1 or ch == curses.KEY_RESIZE:
-            return "RESIZE"
+            return EVENT_RESIZE
         elif ch == 10 or ch == curses.KEY_ENTER:
-            return "ENTER"
+            return EVENT_ENTER
         elif ch == 127 or ch == curses.KEY_BACKSPACE:
-            return "BACKSPACE"
+            return EVENT_BACKSPACE
         elif ch == curses.KEY_UP:
-            return "UP"
+            return EVENT_UP
         elif ch == curses.KEY_DOWN:
-            return "DOWN"
+            return EVENT_DOWN
         elif ch == curses.KEY_LEFT:
-            return "LEFT"
+            return EVENT_LEFT
         elif ch == curses.KEY_RIGHT:
-            return "RIGHT"
+            return EVENT_RIGHT
         elif ch == 3:
-            return "CTRL+C"
+            return EVENT_CTRL_C
         else:
             # self.change_cell(0, 0, str(ch), 15, 0)
             return chr(ch)
 
     def __enter__(self):
-        os.environ['ESCDELAY'] = '25'
+        os.environ["ESCDELAY"] = "25"
         self.screen = curses.initscr()
         curses.noecho()
         curses.raw()

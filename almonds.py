@@ -412,18 +412,18 @@ def main():
         while running:
             event = cb.poll_event().upper()
 
-            if event == "RESIZE":
+            if event == EVENT_RESIZE:
                 plane.reset()
-            elif event in ("ESC", "CTRL+C"):
+            elif event in (EVENT_ESC, EVENT_CTRL_C):
                 running = False
             # Navigation
-            elif event == "UP":
+            elif event == EVENT_UP:
                 params.plane_y0 -= 1 * params.move_speed
-            elif event == "DOWN":
+            elif event == EVENT_DOWN:
                 params.plane_y0 += 1 * params.move_speed
-            elif event == "LEFT":
+            elif event == EVENT_LEFT:
                 params.plane_x0 -= int(2 * params.move_speed)
-            elif event == "RIGHT":
+            elif event == EVENT_RIGHT:
                 params.plane_x0 += int(2 * params.move_speed)
             # Move speed
             elif event == "C":
@@ -433,7 +433,7 @@ def main():
                 if params.move_speed == 0:
                     params.move_speed = 1
             # Manual input
-            elif event == "ENTER":
+            elif event == EVENT_ENTER:
                 menu = InputMenu(cb, ["* Real (X)", "* Imaginary (Y)", "  Zoom", "  Iterations"],
                                  "Input manual coordinates")
                 r, values = menu.show()

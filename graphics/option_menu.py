@@ -2,6 +2,7 @@
 
 from __future__ import division
 
+from ..cursebox import *
 from .drawing import *
 
 
@@ -24,14 +25,14 @@ class OptionMenu(object):
 
         while self.open:
             event = self.cb.poll_event()
-            if event == "ESC":
+            if event == EVENT_ESC:
                 self.selected = -1
                 self.open = False
-            elif event == "UP":
+            elif event == EVENT_UP:
                 self.selected = (self.selected - 1) % len(self.options)
-            elif event == "DOWN":
+            elif event == EVENT_DOWN:
                 self.selected = (self.selected + 1) % len(self.options)
-            elif event == "ENTER":
+            elif event == EVENT_ENTER:
                 self.open = False
 
             if self.open:

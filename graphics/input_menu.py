@@ -2,8 +2,7 @@
 
 from __future__ import division
 
-import string
-
+from ..cursebox import *
 from .drawing import *
 
 
@@ -35,19 +34,19 @@ class InputMenu(object):
         while self.open:
             event = self.cb.poll_event()
 
-            if event == "ESC":
+            if event == EVENT_ESC:
                 self.status = -1
                 self.open = False
 
-            if event in ("UP", "DOWN"):
-                if event == "UP":
+            if event in (EVENT_UP, EVENT_DOWN):
+                if event == EVENT_UP:
                     self.line = (self.line - 1) % len(self.fields)
-                elif event == "DOWN":
+                elif event == EVENT_DOWN:
                     self.line = (self.line + 1) % len(self.fields)
                 self.column = len(self.values[self.line])
-            elif event == "ENTER":
+            elif event == EVENT_ENTER:
                 self.open = False
-            elif event == "BACKSPACE":
+            elif event == EVENT_BACKSPACE:
                 if self.column > 0:
                     self.column -= 1
                     self.values[self.line] = self.values[self.line][:-1]
