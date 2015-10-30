@@ -1,12 +1,40 @@
 # -*- encoding: utf-8 -*-
 
+import os
+import sys
+
 from .colortrans import rgb2short
 
+UNIX_COLORS = {
+    "black": 0,
+    "red": 1,
+    "green": 2,
+    "yellow": 3,
+    "blue": 4,
+    "magenta": 5,
+    "cyan": 6,
+    "white": 7
+}
+
+WIN_COLORS = {
+    "black": 0,
+    "blue": 1,
+    "green": 2,
+    "cyan": 3,
+    "red": 4,
+    "magenta": 5,
+    "yellow": 6,
+    "white": 7
+}
 
 class Colors(object):
     def __init__(self):
         self.dark = True
         self.bright = True
+        if os.name == "nt" and sys.platform != "cygwin":
+            self.codes = WIN_COLORS
+        else:
+            self.codes = UNIX_COLORS
 
     def toggle_dark(self):
         self.dark = not self.dark
@@ -32,25 +60,25 @@ class Colors(object):
         return 0
 
     def red(self):
-        return 1 + self.offset
+        return self.codes["red"] + self.offset
 
     def green(self):
-        return 2 + self.offset
+        return self.codes["green"] + self.offset
 
     def yellow(self):
-        return 3 + self.offset
+        return self.codes["yellow"] + self.offset
 
     def blue(self):
-        return 4 + self.offset
+        return self.codes["blue"] + self.offset
 
     def magenta(self):
-        return 5 + self.offset
+        return self.codes["magenta"] + self.offset
 
     def cyan(self):
-        return 6 + self.offset
+        return self.codes["cyan"] + self.offset
 
     def white(self):
-        return 7 + self.offset
+        return self.codes["white"] + self.offset
 
     @staticmethod
     def to_xterm(color):
