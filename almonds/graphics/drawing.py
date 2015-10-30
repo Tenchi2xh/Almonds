@@ -6,7 +6,7 @@ import math
 import os
 import sys
 
-from .colors import colors
+from ..cursebox import colors
 from ..cursebox import symbols
 
 if sys.version_info.major > 2:

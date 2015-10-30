@@ -28,7 +28,8 @@ class SplashPopup(object):
         self.update_dimensions()
 
         # Clear
-        fill(self.cb, self.x0 + 1, self.y0 + 1, self.width - 2, self.height - 2, " ")
+        fill(self.cb, 0, 0, self.cb.width, self.cb.height, " ",
+             colors.black, lambda: 16)
 
         if self.box:
             draw_box(self.cb, self.x0, self.y0, self.width, self.height)
