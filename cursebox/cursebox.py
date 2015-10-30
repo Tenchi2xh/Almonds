@@ -66,6 +66,7 @@ class Cursebox(object):
         self.screen.clear()
 
     def poll_event(self):
+        curses.flushinp()
         ch = self.screen.getch()
 
         if ch == 27:
