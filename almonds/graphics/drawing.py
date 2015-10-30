@@ -3,6 +3,7 @@
 from __future__ import division
 
 import math
+import os
 import sys
 
 from .colors import colors
@@ -21,6 +22,9 @@ BOX_CORNERS      = [symbols["BOX_TOP_LEFT"], symbols["BOX_TOP_RIGHT"],
 DITHER_TYPES = [("8 colors ANSI", symbols.dither1),
                 ("8 colors ASCII", symbols.dither2),
                 ["256 colors"]]
+
+if os.name == "nt" and sys.platform != "cygwin":
+    DITHER_TYPES.pop()
 
 # Palettes
 

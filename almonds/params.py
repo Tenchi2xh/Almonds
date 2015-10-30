@@ -2,6 +2,9 @@
 
 from __future__ import division
 
+import os
+import sys
+
 # Unlike pixels, terminal characters do not have a 1:1 ratio
 CHAR_RATIO = 0.428
 
@@ -34,6 +37,8 @@ class Params(object):
         self.palette_offset = 0                 # Temporary offset for color cycling
         self.crosshairs = False
         self.crosshairs_coord = None
+        if os.name == "nt" and sys.platform != "cygwin":
+            self.dither_type = 0
 
         # Infinite plane that stores results
         self.plane_x0 = None                    # Plane coordinate of leftmost position on the displayed screen
