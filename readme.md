@@ -59,6 +59,12 @@ Using PyPy will make the hi-res captures faster, but the terminal navigation slo
 <p align="center"><i>Discovering a mini-brot. At this level of deep zoom, the adaptive palette mode is very handy.</i></p>
 <br/>
 
+<br/>
+<img width="971" alt="screen shot 2015-10-30 at 13 18 45" src="https://cloud.githubusercontent.com/assets/4116708/10845542/f0f0cc2e-7f08-11e5-8b1e-a1cda696c1cb.png">
+<br/><p align="center"><i>Now running in native Windows terminals!</i></p>
+<br/>
+
+
 ### Renders
 
 ![almonds_2015-10-18_02-11-52](https://cloud.githubusercontent.com/assets/4116708/10803285/b5b03b9c-7dc1-11e5-81a0-2e16503322f6.png)
