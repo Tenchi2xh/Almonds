@@ -50,7 +50,7 @@ Using PyPy will make the hi-res captures faster, but the terminal navigation slo
 
 ### Usage
 
-<pre style="line-height: 100%; letter-spacing: -1px">
+<pre>
                                                                              
                 ██                                                           
           ██  ██████  ██   .d8b.  db                              db         
@@ -120,7 +120,7 @@ Keys | Action
 
 <br/>
 <img width="971" alt="screen shot 2015-10-30 at 13 18 45" src="https://cloud.githubusercontent.com/assets/4116708/10845542/f0f0cc2e-7f08-11e5-8b1e-a1cda696c1cb.png">
-<br/><p align="center"><i>Now running in native Windows terminals!</i></p>
+<br/><p align="center"><i>Now running in native Windows terminals!</i> (Notice the stretching because the default terminal font for windows is 8 by 12 pixels, try running with `-d 8 12` for a perfect display)</p> 
 <br/>
 
 

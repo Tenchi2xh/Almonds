@@ -78,6 +78,6 @@ def open_file(filename):
     elif sys.platform == "cygwin":
         subprocess.call(("cygstart", filename))
     elif os.name == "nt":
-        os.startfile(filename)
+        os.system("start %s" % filename)
     elif os.name == "posix":
         subprocess.call(("xdg-open", filename))
