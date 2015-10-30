@@ -12,15 +12,15 @@ import subprocess
 
 from PIL import Image
 
-from cursebox import *
-from plane import Plane
-from graphics.option_menu import *
-from graphics.input_menu import *
-from graphics.splash_popup import *
-from mandelbrot import *
-from logger import *
-from params import *
-from utils import *
+from .cursebox import *
+from .plane import Plane
+from .graphics.option_menu import *
+from .graphics.input_menu import *
+from .graphics.splash_popup import *
+from .mandelbrot import *
+from .logger import *
+from .params import *
+from .utils import *
 
 __version__ = "1.18b"
 
@@ -176,8 +176,10 @@ def draw_menu(cb, params):
     draw_text(cb, x0, 1, ("Almonds %s" % __version__).center(MENU_WIDTH - 2))
     # Write options (and stats)
     # Mandelbrot position
-    draw_option("Real", "{0:.13g}".format(params.mb_cx), u"$[←]$, $[→]$")
-    draw_option("Imaginary", "{0:.13g}".format(params.mb_cy), u"$[↑]$, $[↓]$")
+    draw_option("Real", "{0:.13g}".format(params.mb_cx),
+                "$[" + symbols["ARROW_LEFT"] + "]$, $[" + symbols["ARROW_RIGHT"] + "]$")
+    draw_option("Imaginary", "{0:.13g}".format(params.mb_cy),
+                "$[" + symbols["ARROW_UP"] + "]$, $[" + symbols["ARROW_DOWN"] + "]$")
     draw_option("Input coordinates...", "", "$[Enter]$")
     draw_option.counter += 1
     h_seps.append(draw_option.counter + 1)

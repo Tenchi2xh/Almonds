@@ -6,38 +6,20 @@ import math
 import sys
 
 from .colors import colors
+from ..cursebox import symbols
 
 if sys.version_info.major > 2:
     xrange = range
 
 # Box drawing symbols
 
-BOX_TOP_LEFT     = u"┌"
-BOX_TOP_RIGHT    = u"┐"
-BOX_BOTTOM_LEFT  = u"└"
-BOX_BOTTOM_RIGHT = u"┘"
-BOX_CORNERS      = [BOX_TOP_LEFT, BOX_TOP_RIGHT, BOX_BOTTOM_LEFT, BOX_BOTTOM_RIGHT]
-
-BOX_HORIZONTAL   = u"─"
-BOX_VERTICAL     = u"│"
-
-BOX_X_LEFT       = u"├"
-BOX_X_RIGHT      = u"┤"
-BOX_X_TOP        = u"┬"
-BOX_X_BOTTOM     = u"┴"
-BOX_X_MIDDLE     = u"┼"
-
-MARGIN_WHOLE = u"│"
-MARGIN_HALF  = u"╵"
-MARGIN_TENTH = u"╷"
-
+BOX_CORNERS      = [symbols["BOX_TOP_LEFT"], symbols["BOX_TOP_RIGHT"],
+                    symbols["BOX_BOTTOM_LEFT"], symbols["BOX_BOTTOM_RIGHT"]]
 
 # Block drawing symbols
 
-DITHER_1 = u"█▓▒░ "
-DITHER_2 = u"#&X$x=+;:,. "
-DITHER_TYPES = [("8 colors ANSI", DITHER_1),
-                ("8 colors ASCII", DITHER_2),
+DITHER_TYPES = [("8 colors ANSI", symbols.dither1),
+                ("8 colors ASCII", symbols.dither2),
                 ["256 colors"]]
 
 # Palettes
@@ -135,12 +117,12 @@ def get_crosshairs_symbol(x, y, symbol, crosshairs_coord):
     if x == crosshairs_coord[0]:
         crosshairs = True
         if y == crosshairs_coord[1]:
-            symbol = BOX_X_MIDDLE
+            symbol = symbols["BOX_X_MIDDLE"]
         else:
-            symbol = BOX_VERTICAL
+            symbol = symbols["BOX_VERTICAL"]
     elif y == crosshairs_coord[1]:
         crosshairs = True
-        symbol = BOX_HORIZONTAL
+        symbol = symbols["BOX_HORIZONTAL"]
 
     return symbol, crosshairs
 
@@ -161,16 +143,16 @@ def draw_box(cb, x0, y0, w, h, fg=colors.default_fg, bg=colors.default_bg, h_sep
         cb.change_cell(c[0], c[1], BOX_CORNERS[i], fg, bg)
     for x in xrange(1, w):
         for s in h_seps + [0, h]:
-            cb.change_cell(x0 + x, y0 + s, BOX_HORIZONTAL, fg, bg)
+            cb.change_cell(x0 + x, y0 + s, symbols["BOX_HORIZONTAL"], fg, bg)
     for y in xrange(1, h):
         for s in v_seps + [0, w]:
-            cb.change_cell(x0 + s, y0 + y, BOX_VERTICAL, fg, bg)
+            cb.change_cell(x0 + s, y0 + y, symbols["BOX_VERTICAL"], fg, bg)
     for s in h_seps:
-        cb.change_cell(x0,     y0 + s, BOX_X_LEFT,  fg, bg)
-        cb.change_cell(x0 + w, y0 + s, BOX_X_RIGHT, fg, bg)
+        cb.change_cell(x0,     y0 + s, symbols["BOX_X_LEFT"],  fg, bg)
+        cb.change_cell(x0 + w, y0 + s, symbols["BOX_X_RIGHT"], fg, bg)
     for s in v_seps:
-        cb.change_cell(x0 + s, y0,     BOX_X_TOP,    fg, bg)
-        cb.change_cell(x0 + s, y0 + h, BOX_X_BOTTOM, fg, bg)
+        cb.change_cell(x0 + s, y0,     symbols["BOX_X_TOP"],    fg, bg)
+        cb.change_cell(x0 + s, y0 + h, symbols["BOX_X_BOTTOM"], fg, bg)
 
 
 def draw_progress_bar(cb, message, value, max_value):

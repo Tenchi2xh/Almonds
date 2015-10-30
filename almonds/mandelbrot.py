@@ -5,7 +5,7 @@ from __future__ import division
 import cmath
 import sys
 
-from utils import clamp
+from .utils import clamp
 
 if sys.version_info.major > 2:
     xrange = range

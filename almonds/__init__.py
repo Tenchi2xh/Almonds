@@ -1,1 +1,1 @@
-from almonds import main
+from .almonds import main

@@ -1,3 +1,3 @@
-from cursebox import *
-from constants import *
-from symbols import symbols
+from .cursebox import *
+from .constants import *
+from .symbols import symbols
