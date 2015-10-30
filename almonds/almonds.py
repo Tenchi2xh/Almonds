@@ -22,7 +22,7 @@ from .logger import *
 from .params import *
 from .utils import *
 
-__version__ = "1.19b"
+__version__ = "1.20b"
 
 MENU_WIDTH = 40
 
@@ -42,7 +42,7 @@ def compute_capture(args):
     return x, y, mandelbrot_capture(x, y, w, h, params)
 
 
-def draw_panel(cb, p, params, plane):
+def draw_panel(cb, pool, params, plane):
     """
     Draws the application's main panel, displaying the current Mandelbrot view.
 
@@ -81,13 +81,13 @@ def draw_panel(cb, p, params, plane):
     # Compute all missing values via multiprocessing
     n_processes = 0
     if len(missing_coords) > 0:
-        n_cores = multiprocessing.cpu_count()
+        n_cores = pool._processes
         n_processes = len(missing_coords) // 256
         if n_processes > n_cores:
             n_processes = n_cores
 
         start = time.time()
-        for i, result in enumerate(p.imap_unordered(compute, missing_coords, chunksize=256)):
+        for i, result in enumerate(pool.imap_unordered(compute, missing_coords, chunksize=256)):
             plane[result[0], result[1]] = result[2]
             if time.time() - start > 2:
                 if i % 200 == 0:
@@ -140,7 +140,7 @@ def draw_panel(cb, p, params, plane):
     draw_box(cb, 0, 0, w + 1, h + 1)
 
 
-def draw_menu(cb, params):
+def draw_menu(cb, params, qwertz):
     """
     Draws the application's side menu and options.
 
@@ -171,6 +171,11 @@ def draw_menu(cb, params):
         draw_option.counter += 1
     draw_option.counter = 1
 
+    z = "Z"
+    y = "Y"
+    if qwertz:
+        z, y = y, z
+
     h_seps = [2]
     # Draw title
     draw_text(cb, x0, 1, ("Almonds %s" % __version__).center(MENU_WIDTH - 2))
@@ -185,7 +190,7 @@ def draw_menu(cb, params):
     h_seps.append(draw_option.counter + 1)
     # Mandelbrot options
     draw_option("Move speed", params.move_speed, "$[C]$, $[V]$")
-    draw_option("Zoom", "{0:.13g}".format(params.zoom), "$[Z]$, $[U]$")
+    draw_option("Zoom", "{0:.13g}".format(params.zoom), "$[" + y + "]$, $[U]$")
     draw_option("Iterations", params.max_iterations, "$[I]$, $[O]$")
     draw_option("Julia mode", "On" if params.julia else "Off", "$[J]$")
     draw_option.counter += 1
@@ -195,7 +200,7 @@ def draw_menu(cb, params):
     draw_option("Color mode", DITHER_TYPES[params.dither_type][0], "$[D]$")
     draw_option("Order", "Reversed" if params.reverse_palette else "Normal", "$[R]$")
     draw_option("Mode", "Adaptive" if params.adaptive_palette else "Linear", "$[A]$")
-    draw_option("Cycle!", "", "$[Y]$")
+    draw_option("Cycle!", "", "$[" + z + "]$")
     draw_option.counter += 1
     h_seps.append(draw_option.counter + 1)
     # Misc.
@@ -223,7 +228,7 @@ def draw_menu(cb, params):
             break
 
 
-def update_display(cb, p, params, plane):
+def update_display(cb, pool, params, plane, qwertz):
     """
     Draws everything.
 
@@ -236,9 +241,9 @@ def update_display(cb, p, params, plane):
     :return:
     """
     cb.clear()
-    draw_panel(cb, p, params, plane)
+    draw_panel(cb, pool, params, plane)
     update_position(params)  # Update Mandelbrot-space coordinates before drawing them
-    draw_menu(cb, params)
+    draw_menu(cb, params, qwertz)
     cb.present()
 
 
@@ -262,7 +267,7 @@ def save(params):
         params.log("Current scene saved!")
 
 
-def capture(cb, p, params):
+def capture(cb, pool, params):
     """
     Renders and saves a screen-sized picture of the current position.
 
@@ -294,7 +299,7 @@ def capture(cb, p, params):
 
     results = []
     # Dispatch work to pool and draw results as they come in
-    for i, result in enumerate(p.imap_unordered(compute_capture, coords, chunksize=256)):
+    for i, result in enumerate(pool.imap_unordered(compute_capture, coords, chunksize=256)):
         results.append(result)
         if i % 2000 == 0:
             draw_progress_bar(cb, "Capturing current scene...", i, w * h)
@@ -327,12 +332,12 @@ def capture(cb, p, params):
     filename = "captures/almonds_%s.png" % ts
     image.save(filename, "PNG")
     params.log("Current scene captured!")
-    params.log("(Used %d processes)" % multiprocessing.cpu_count())
+    params.log("(Used %d processes)" % pool._processes)
 
     open_file(filename)
 
 
-def cycle(cb, p, params, plane):
+def cycle(cb, pool, params, plane):
     """
     Fun function to do a palette cycling animation.
 
@@ -349,7 +354,7 @@ def cycle(cb, p, params, plane):
         step = 1
     for i in xrange(0, params.max_iterations, step):
         params.palette_offset = i
-        draw_panel(cb, p, params, plane)
+        draw_panel(cb, pool, params, plane)
         cb.present()
     params.palette_offset = 0
 
@@ -376,7 +381,7 @@ def init_coords(cb, params):
     zoom(params, 1)
 
 
-def main(p):
+def main(pool, ratio, qwertz, savefile):
     begin = time.time()
     with Cursebox() as cb:
 
@@ -385,7 +390,7 @@ def main(p):
         log("Exit with $[ESC]$")
         log("or $[CTRL]$ + $[C]$")
 
-        params = Params(log)
+        params = Params(log, ratio)
         plane = Plane()
 
         def load(path):
@@ -401,14 +406,14 @@ def main(p):
                 log("Save loaded!")
                 return params
 
-        if len(sys.argv) == 2:
-            params = load(sys.argv[1])
+        if savefile is not None:
+            params = load(savefile)
 
         popup = SplashPopup(cb, "\n".join(splash), box=True)
         popup.show()
 
         init_coords(cb, params)
-        update_display(cb, p, params, plane)
+        update_display(cb, pool, params, plane, qwertz)
 
         running = True
         while running:
@@ -461,7 +466,7 @@ def main(p):
                 else:
                     params.log("Manual input canceled")
             # Zoom / un-zoom
-            elif event == "Z":
+            elif (qwertz and event == "Z") or (not qwertz and event == "Y"):
                 zoom(params, 1.3)
                 plane.reset()
             elif event == "U":
@@ -501,9 +506,9 @@ def main(p):
                     else:
                         log("Load canceled")
             elif event == "H":
-                capture(cb, p, params)
-            elif event == "Y":
-                cycle(cb, p, params, plane)
+                capture(cb, pool, params)
+            elif (qwertz and event == "Y") or (not qwertz and event == "Z"):
+                cycle(cb, pool, params, plane)
             elif event == "T":
                 colors.toggle_dark()
             elif event == "A":
@@ -516,7 +521,7 @@ def main(p):
                 params.crosshairs = not params.crosshairs
 
             if running:
-                update_display(cb, p, params, plane)
+                update_display(cb, pool, params, plane, qwertz)
 
     spent = (time.time() - begin) // 60
     spaces = " " * 26

@@ -47,6 +47,36 @@ The font [Envy Code R](https://damieng.com/blog/2008/05/26/envy-code-r-preview-7
 
 Using PyPy will make the hi-res captures faster, but the terminal navigation slower.
 
+### Usage
+
+<pre style="line-height: 100%; letter-spacing: -1px">
+                                                                             
+                ██                                                           
+          ██  ██████  ██   .d8b.  db                              db         
+            ██████████    d8' `8b 88 .88b  d88. .d88b. .888b  .d8888 .d8888  
+      ██  ██████████████  88ooo88 88 88  88  88 8P  Y8 88  88 88  88 `8bo.   
+  ████████████████████    88   88 88 88  88  88 8b  d8 88  88 88  8D   `Y8b  
+      ██  ██████████████  YP   YP YP YP  YP  YP `Y88P' VP  VP Y888D' `8888Y  
+            ██████████                                                       
+          ██  ██████  ██    T e r m i n a l   f r a c t a l   v i e w e r    
+                ██                                                           
+                                                                             
+usage: almonds [-h] [-p N] [-r RATIO | -d W H] [-z] [save]
+
+version 1.20b
+
+positional arguments:
+  save                          path of a save to load
+
+optional arguments:
+  -h, --help                    show this help message and exit
+  -p N, --processes N           number of concurrent processes
+  -r RATIO, --char-ratio RATIO  width to height ratio of the terminal characters
+  -d W H, --dimensions W H      width and height of the terminal characters
+  -z, --qwertz                  swap the "z" and "y" keys
+
+</pre>
+
 ### Controls
 
 Keys | Action
@@ -54,14 +84,14 @@ Keys | Action
 <kbd>↑</kbd>, <kbd>↓</kbd>, <kbd>←</kbd>, <kbd>→</kbd> | Move around
 <kbd>C</kbd>, <kbd>V</kbd> | Adjust move speed
 <kbd>⏎</kbd> | Input manual coordinates
-<kbd>Z</kbd>, <kbd>U</kbd> | Zoom / Un-zoom
+<kbd>Y</kbd>, <kbd>U</kbd> | Zoom / Un-zoom
 <kbd>I</kbd>, <kbd>O</kbd> | Increase / Decrase number of iterations
 <kbd>J</kbd> | Enter / Leave Julia set 
 <kbd>P</kbd> | Next palette
 <kbd>D</kbd> | Color mode (256 colors / 8 colors ANSI / 8 colors ASCII)
 <kbd>R</kbd> | Reverse palette order
 <kbd>A</kbd> | Palette mode (Normal / Adaptive)
-<kbd>Y</kbd> | Launch palette cycling animation
+<kbd>Z</kbd> | Launch palette cycling animation
 <kbd>H</kbd> | Capture current view in a high-resolution PNG file
 <kbd>X</kbd> | Show / Hide crosshairs
 <kbd>T</kbd> | Toggle UI theme (Dark / Light)

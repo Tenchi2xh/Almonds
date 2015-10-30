@@ -5,15 +5,12 @@ from __future__ import division
 import os
 import sys
 
-# Unlike pixels, terminal characters do not have a 1:1 ratio
-CHAR_RATIO = 0.428
-
 
 class Params(object):
     """
     Class representing the current state of Almonds.
     """
-    def __init__(self, log):
+    def __init__(self, log, char_ratio):
         """
         Initializes the parameters.
 
@@ -21,6 +18,7 @@ class Params(object):
         :type log: logger.Logger
         """
         self.log = log
+        self.char_ratio = char_ratio
 
         # Mandelbrot parameters
         self.zoom = 1.0                         # Current zoom level factor
@@ -77,7 +75,7 @@ class Params(object):
         """
         self.plane_w = w
         self.plane_h = h
-        self.plane_ratio = CHAR_RATIO * w / h
+        self.plane_ratio = self.char_ratio * w / h
 
         if self.crosshairs:
             self.crosshairs_coord = ((w + 2) // 2, (h + 2) // 2)
