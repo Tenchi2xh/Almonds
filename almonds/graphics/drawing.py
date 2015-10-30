@@ -101,7 +101,7 @@ def draw_dithered_color(cb, x, y, palette, dither, n, n_max, crosshairs_coord=No
             else:
                 c1 = sorted_palette[-1]
 
-    cb.change_cell(x, y, symbol, c1(), c2())
+    cb.put(x, y, symbol, c1(), c2())
 
 
 def draw_color(cb, x, y, value, max_iterations, palette, crosshairs_coord=None):
@@ -113,7 +113,7 @@ def draw_color(cb, x, y, value, max_iterations, palette, crosshairs_coord=None):
         if crosshairs:
             fg = colors.to_xterm((255 - bg[0], 255 - bg[1], 255 - bg[2]))
 
-    cb.change_cell(x, y, symbol, fg, colors.to_xterm(bg))
+    cb.put(x, y, symbol, fg, colors.to_xterm(bg))
 
 
 def get_crosshairs_symbol(x, y, symbol, crosshairs_coord):
@@ -145,19 +145,22 @@ def draw_box(cb, x0, y0, w, h, fg=colors.default_fg, bg=colors.default_bg, h_sep
     bg = bg()
 
     for i, c in enumerate(corners):
-        cb.change_cell(c[0], c[1], BOX_CORNERS[i], fg, bg)
-    for x in xrange(1, w):
-        for s in h_seps + [0, h]:
-            cb.change_cell(x0 + x, y0 + s, symbols["BOX_HORIZONTAL"], fg, bg)
+        cb.put(c[0], c[1], BOX_CORNERS[i], fg, bg)
+
+    for s in h_seps + [0, h]:
+        cb.put(x0 + 1, y0 + s, symbols["BOX_HORIZONTAL"] * (w - 1), fg, bg)
+
     for y in xrange(1, h):
         for s in v_seps + [0, w]:
-            cb.change_cell(x0 + s, y0 + y, symbols["BOX_VERTICAL"], fg, bg)
+            cb.put(x0 + s, y0 + y, symbols["BOX_VERTICAL"], fg, bg)
+
     for s in h_seps:
-        cb.change_cell(x0,     y0 + s, symbols["BOX_X_LEFT"],  fg, bg)
-        cb.change_cell(x0 + w, y0 + s, symbols["BOX_X_RIGHT"], fg, bg)
+        cb.put(x0,     y0 + s, symbols["BOX_X_LEFT"],  fg, bg)
+        cb.put(x0 + w, y0 + s, symbols["BOX_X_RIGHT"], fg, bg)
+
     for s in v_seps:
-        cb.change_cell(x0 + s, y0,     symbols["BOX_X_TOP"],    fg, bg)
-        cb.change_cell(x0 + s, y0 + h, symbols["BOX_X_BOTTOM"], fg, bg)
+        cb.put(x0 + s, y0,     symbols["BOX_X_TOP"],    fg, bg)
+        cb.put(x0 + s, y0 + h, symbols["BOX_X_BOTTOM"], fg, bg)
 
 
 def draw_progress_bar(cb, message, value, max_value):
@@ -182,7 +185,7 @@ def draw_scroll_bar(cb, x0, y0, h, n_visible, n_items, position, fg=colors.defau
 
     for y in xrange(h):
         symbol = u"█" if knob_position <= y <= knob_end else u"░"
-        cb.change_cell(x0, y0 + y, symbol, fg(), bg())
+        cb.put(x0, y0 + y, symbol, fg(), bg())
 
 
 def draw_text(cb, x0, y0, string, fg=colors.default_fg, bg=colors.default_bg):
@@ -194,13 +197,12 @@ def draw_text(cb, x0, y0, string, fg=colors.default_fg, bg=colors.default_bg):
             fg, bg = bg, fg
             markup_compensation += 1
             continue
-        cb.change_cell(x0 + i - markup_compensation, y0, c, fg, bg)
+        cb.put(x0 + i - markup_compensation, y0, c, fg, bg)
 
 
 def fill(cb, x0, y0, w, h, symbol, fg=colors.default_fg, bg=colors.default_bg):
-    for x in xrange(w):
-        for y in xrange(h):
-            cb.change_cell(x0 + x, y0 + y, symbol, fg(), bg())
+    for y in xrange(h):
+        cb.put(x0, y0 + y, symbol * (w - 1), fg(), bg())
 
 
 def interpolate(c1, c2, factor):

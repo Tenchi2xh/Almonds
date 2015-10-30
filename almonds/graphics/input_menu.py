@@ -91,7 +91,7 @@ class InputMenu(object):
 
         self.cb.set_cursor(self.x0 + self.longest + 4 + self.column, self.y0 + offset_y + self.line + 1)
 
-        self.cb.present()
+        self.cb.refresh()
 
     def update_dimensions(self):
         # Prevent menu from taking the whole screen

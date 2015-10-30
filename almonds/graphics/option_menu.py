@@ -95,7 +95,7 @@ class OptionMenu(object):
             draw_scroll_bar(self.cb, self.x0 + self.width - 2, self.y0 + 1 + offset_y, self.height - 2 - offset_y,
                             max_items, len(self.options), self.selected)
 
-        self.cb.present()
+        self.cb.refresh()
 
     def update_dimensions(self):
         # Prevent menu from taking the whole screen

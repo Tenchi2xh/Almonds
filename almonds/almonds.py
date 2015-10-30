@@ -93,7 +93,7 @@ def draw_panel(cb, pool, params, plane):
             if time.time() - start > 2:
                 if i % 200 == 0:
                     draw_progress_bar(cb, "Render is taking a longer time...", i, len(missing_coords))
-                    cb.present()
+                    cb.refresh()
 
     if generated > 0:
         params.log("Added %d missing cells" % generated)
@@ -245,7 +245,7 @@ def update_display(cb, pool, params, plane, qwertz):
     draw_panel(cb, pool, params, plane)
     update_position(params)  # Update Mandelbrot-space coordinates before drawing them
     draw_menu(cb, params, qwertz)
-    cb.present()
+    cb.refresh()
 
 
 def save(params):
@@ -304,7 +304,7 @@ def capture(cb, pool, params):
         results.append(result)
         if i % 2000 == 0:
             draw_progress_bar(cb, "Capturing current scene...", i, w * h)
-            cb.present()
+            cb.refresh()
 
     min_value = 0.0
     max_value = params.max_iterations
@@ -356,7 +356,7 @@ def cycle(cb, pool, params, plane):
     for i in xrange(0, params.max_iterations, step):
         params.palette_offset = i
         draw_panel(cb, pool, params, plane)
-        cb.present()
+        cb.refresh()
     params.palette_offset = 0
 
 

@@ -37,7 +37,7 @@ class SplashPopup(object):
         for y, line in enumerate(self.message):
             draw_text(self.cb, self.x0 + 1, self.y0 + 1 + y, line)
 
-        self.cb.present()
+        self.cb.refresh()
 
     def update_dimensions(self):
         self.width = len(self.message[0]) + 2
