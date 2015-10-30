@@ -6,9 +6,8 @@ from __future__ import division
 import multiprocessing
 import argparse
 
-from almonds.utils import splash
-from almonds.almonds import __version__
-
+from almonds import splash
+from almonds import __version__
 from almonds import main
 
 

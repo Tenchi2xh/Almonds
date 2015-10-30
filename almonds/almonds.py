@@ -14,6 +14,7 @@ from PIL import Image
 
 from .cursebox import *
 from .plane import Plane
+from .splash import splash
 from .graphics.option_menu import *
 from .graphics.input_menu import *
 from .graphics.splash_popup import *
