@@ -23,7 +23,7 @@ Just run:
 
 ```
 $ pip install Pillow
-$ python almonds.py
+$ python main.py
 ```
 
 On Windows, Almonds only works using cygwin and [`mintty`](https://mintty.github.io/) ([`babun`](http://babun.github.io/) is recommended).

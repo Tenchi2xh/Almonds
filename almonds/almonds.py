@@ -42,7 +42,7 @@ def compute_capture(args):
     return x, y, mandelbrot_capture(x, y, w, h, params)
 
 
-def draw_panel(cb, params, plane):
+def draw_panel(cb, p, params, plane):
     """
     Draws the application's main panel, displaying the current Mandelbrot view.
 
@@ -221,7 +221,7 @@ def draw_menu(cb, params):
             break
 
 
-def update_display(cb, params, plane):
+def update_display(cb, p, params, plane):
     """
     Draws everything.
 
@@ -234,7 +234,7 @@ def update_display(cb, params, plane):
     :return:
     """
     cb.clear()
-    draw_panel(cb, params, plane)
+    draw_panel(cb, p, params, plane)
     update_position(params)  # Update Mandelbrot-space coordinates before drawing them
     draw_menu(cb, params)
     cb.present()
@@ -260,7 +260,7 @@ def save(params):
         params.log("Current scene saved!")
 
 
-def capture(cb, params):
+def capture(cb, p, params):
     """
     Renders and saves a screen-sized picture of the current position.
 
@@ -374,7 +374,7 @@ def init_coords(cb, params):
     zoom(params, 1)
 
 
-def main():
+def main(p):
     begin = time.time()
     with Cursebox() as cb:
 
@@ -406,7 +406,7 @@ def main():
         popup.show()
 
         init_coords(cb, params)
-        update_display(cb, params, plane)
+        update_display(cb, p, params, plane)
 
         running = True
         while running:
@@ -499,7 +499,7 @@ def main():
                     else:
                         log("Load canceled")
             elif event == "H":
-                capture(cb, params)
+                capture(cb, p, params)
             elif event == "Y":
                 cycle(cb, params, plane)
             elif event == "T":
@@ -514,7 +514,7 @@ def main():
                 params.crosshairs = not params.crosshairs
 
             if running:
-                update_display(cb, params, plane)
+                update_display(cb, p, params, plane)
 
     spent = (time.time() - begin) // 60
     spaces = " " * 26
@@ -522,6 +522,3 @@ def main():
     print("%s%d minute%s exploring fractals, see you soon :)\n" % (spaces, spent, "s" if spent > 1 else ""))
     print("%s- Almonds %s by Tenchi <tenchi@team2xh.net>\n" % (spaces, __version__))
 
-if __name__ == "__main__":
-    p = multiprocessing.Pool(multiprocessing.cpu_count())
-    main()
