@@ -8,6 +8,7 @@ import sys
 
 from ..cursebox import colors
 from ..cursebox import symbols
+from ..utils import is_native_windows
 
 if sys.version_info.major > 2:
     xrange = range
@@ -23,7 +24,7 @@ DITHER_TYPES = [("8 colors ANSI", symbols.dither1),
                 ("8 colors ASCII", symbols.dither2),
                 ["256 colors"]]
 
-if os.name == "nt" and sys.platform != "cygwin":
+if is_native_windows():
     DITHER_TYPES.pop()
 
 # Palettes

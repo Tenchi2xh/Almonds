@@ -4,6 +4,7 @@ import os
 import sys
 
 from .colortrans import rgb2short
+from ..utils import is_native_windows
 
 UNIX_COLORS = {
     "black": 0,
@@ -27,11 +28,12 @@ WIN_COLORS = {
     "white": 7
 }
 
+
 class Colors(object):
     def __init__(self):
         self.dark = True
         self.bright = True
-        if os.name == "nt" and sys.platform != "cygwin":
+        if is_native_windows():
             self.codes = WIN_COLORS
         else:
             self.codes = UNIX_COLORS

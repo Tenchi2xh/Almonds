@@ -3,6 +3,8 @@
 import os
 import sys
 
+from ..utils import is_native_windows
+
 UTF8_SYMBOLS = {
     "BOX_TOP_LEFT"    : u"┌",
     "BOX_TOP_RIGHT"   : u"┐",
@@ -46,7 +48,7 @@ CP437_SYMBOLS = {
 
 class Symbols(object):
     def __init__(self):
-        if os.name == "nt" and sys.platform != "cygwin":
+        if is_native_windows():
             self.symbols = CP437_SYMBOLS
             self.encoding = "cp437"
         else:

@@ -81,3 +81,8 @@ def open_file(filename):
         os.system("start %s" % filename)
     elif os.name == "posix":
         subprocess.call(("xdg-open", filename))
+
+
+def is_native_windows():
+    return os.name == "nt" and sys.platform != "cygwin"
+

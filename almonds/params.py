@@ -5,6 +5,8 @@ from __future__ import division
 import os
 import sys
 
+from .utils import is_native_windows
+
 
 class Params(object):
     """
@@ -35,7 +37,7 @@ class Params(object):
         self.palette_offset = 0                 # Temporary offset for color cycling
         self.crosshairs = False
         self.crosshairs_coord = None
-        if os.name == "nt" and sys.platform != "cygwin":
+        if is_native_windows():
             self.dither_type = 0
 
         # Infinite plane that stores results
