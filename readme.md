@@ -7,6 +7,7 @@ Almonds: a terminal fractal viewer
 ### Features
 
 - Fully fledged Mandelbrot viewer, in your terminal
+- *Now compatible with the native Windows console!*
 - Julia sets
 - Homemade terminal UI
 - 8 color ANSI mode with dithering
@@ -19,14 +20,22 @@ Almonds: a terminal fractal viewer
 
 ### Running
 
-Just run:
+On OS X, Linux and Cygwin:
 
 ```
 $ pip install Pillow
 $ python main.py
 ```
 
-On Windows, Almonds only works using cygwin and [`mintty`](https://mintty.github.io/) ([`babun`](http://babun.github.io/) is recommended).
+(For Cygwin, [`mintty`](https://mintty.github.io/) or [`babun`](http://babun.github.io/) are recommended)
+
+On Windows, download the `curses` module from the [Unofficial Windows Binaries for Python Extension Packages](http://www.lfd.uci.edu/~gohlke/pythonlibs/#curses) (a `curses` implementation for Windows based on [PDCurses](http://pdcurses.sourceforge.net/)), then run:
+
+```
+> pip install curses‑2.2‑cp27‑none‑win32.whl
+> pip install Pillow
+> python main.py
+```
 
 The font [Envy Code R](https://damieng.com/blog/2008/05/26/envy-code-r-preview-7-coding-font-released) is *highly* recommended. If your terminal emulator supports it, try to reduce the line spacing so that the box drawing characters touch. When using another font, if the appearance of the fractal seems squashed, try to adjust the constant `CHAR_RATIO` in `params.py`.
 
@@ -68,4 +77,3 @@ Using PyPy will make the hi-res captures faster, but the terminal navigation slo
 - Separate options in two tabs ?
 - Press <kbd>SPACE</kbd> to hide log
 - New project idea: full-fledged python module for making `cursebox` UI applications
-- ANSI art logo, update quit message and add splash screen
