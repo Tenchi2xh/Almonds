@@ -5,6 +5,7 @@
 - [Features](#features)
 - [Running](#running)
 - [Controls](#controls)
+- [Usage](#usage)
 - [Screenshots](#screenshots)
 - [Renders](#renders)
 
@@ -43,7 +44,7 @@ On Windows, download the `curses` module from the [Unofficial Windows Binaries f
 > python main.py
 ```
 
-The font [Envy Code R](https://damieng.com/blog/2008/05/26/envy-code-r-preview-7-coding-font-released) is *highly* recommended. If your terminal emulator supports it, try to reduce the line spacing so that the box drawing characters touch. When using another font, if the appearance of the fractal seems squashed, try to adjust the constant `CHAR_RATIO` in `params.py`.
+The font [Envy Code R](https://damieng.com/blog/2008/05/26/envy-code-r-preview-7-coding-font-released) is *highly* recommended. If your terminal emulator supports it, try to reduce the line spacing so that the box drawing characters touch. When using another font, the appearance of the fractal may seem squashed because the width to height ratio of the character are different; try to adjust it using the argument `--ratio` (see [Usage](#usage)).
 
 Using PyPy will make the hi-res captures faster, but the terminal navigation slower.
 
