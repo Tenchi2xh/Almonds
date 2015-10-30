@@ -332,7 +332,7 @@ def capture(cb, p, params):
     open_file(filename)
 
 
-def cycle(cb, params, plane):
+def cycle(cb, p, params, plane):
     """
     Fun function to do a palette cycling animation.
 
@@ -349,7 +349,7 @@ def cycle(cb, params, plane):
         step = 1
     for i in xrange(0, params.max_iterations, step):
         params.palette_offset = i
-        draw_panel(cb, params, plane)
+        draw_panel(cb, p, params, plane)
         cb.present()
     params.palette_offset = 0
 
@@ -503,7 +503,7 @@ def main(p):
             elif event == "H":
                 capture(cb, p, params)
             elif event == "Y":
-                cycle(cb, params, plane)
+                cycle(cb, p, params, plane)
             elif event == "T":
                 colors.toggle_dark()
             elif event == "A":
@@ -520,7 +520,7 @@ def main(p):
 
     spent = (time.time() - begin) // 60
     spaces = " " * 26
-    print("\n".join(splash).encode("utf-8"))
+    print(symbols.encode("\n".join(splash)))
     print("%s%d minute%s exploring fractals, see you soon :)\n" % (spaces, spent, "s" if spent > 1 else ""))
     print("%s- Almonds %s by Tenchi <tenchi@team2xh.net>\n" % (spaces, __version__))
 

@@ -51,7 +51,7 @@ class Cursebox(object):
     def change_cell(self, x, y, ch, fg, bg):
         if x < self.width and y < self.height:
             try:
-                self.screen.addstr(y, x, ch.encode(symbols.encoding), self.pairs[fg, bg])
+                self.screen.addstr(y, x, symbols.encode(ch), self.pairs[fg, bg])
             except curses.error:
                 pass
 
