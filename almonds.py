@@ -402,7 +402,7 @@ def main():
         if len(sys.argv) == 2:
             params = load(sys.argv[1])
 
-        popup = SplashPopup(cb, splash, box=True)
+        popup = SplashPopup(cb, "\n".join(splash), box=True)
         popup.show()
 
         init_coords(cb, params)
@@ -518,7 +518,7 @@ def main():
 
     spent = (time.time() - begin) // 60
     spaces = " " * 26
-    print(splash.encode("utf-8"))
+    print("\n".join(splash).encode("utf-8"))
     print("%s%d minute%s exploring fractals, see you soon :)\n" % (spaces, spent, "s" if spent > 1 else ""))
     print("%s- Almonds %s by Tenchi <tenchi@team2xh.net>\n" % (spaces, __version__))
 

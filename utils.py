@@ -5,17 +5,17 @@ import os
 import subprocess
 
 
-splash = u"""                                                                             
-                ██                                                           
-          ██  ██████  ██   .d8b.  db                              db         
-            ██████████    d8' `8b 88 .88b  d88. .d88b. .888b  .d8888 .d8888  
-      ██  ██████████████  88ooo88 88 88  88  88 8P  Y8 88  88 88  88 `8bo.   
-  ████████████████████    88   88 88 88  88  88 8b  d8 88  88 88  8D   `Y8b  
-      ██  ██████████████  YP   YP YP YP  YP  YP `Y88P' VP  VP Y888D' `8888Y  
-            ██████████                                                       
-          ██  ██████  ██    T e r m i n a l   f r a c t a l   v i e w e r    
-                ██                                                           
-                                                                             """
+splash = [u"                                                                             ",
+          u"                ██                                                           ",
+          u"          ██  ██████  ██   .d8b.  db                              db         ",
+          u"            ██████████    d8' `8b 88 .88b  d88. .d88b. .888b  .d8888 .d8888  ",
+          u"      ██  ██████████████  88ooo88 88 88  88  88 8P  Y8 88  88 88  88 `8bo.   ",
+          u"  ████████████████████    88   88 88 88  88  88 8b  d8 88  88 88  8D   `Y8b  ",
+          u"      ██  ██████████████  YP   YP YP YP  YP  YP `Y88P' VP  VP Y888D' `8888Y  ",
+          u"            ██████████                                                       ",
+          u"          ██  ██████  ██    T e r m i n a l   f r a c t a l   v i e w e r    ",
+          u"                ██                                                           ",
+          u"                                                                             "]
 
 
 def clamp(n, lower, upper):
