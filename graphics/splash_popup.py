@@ -21,7 +21,7 @@ class SplashPopup(object):
 
     def show(self):
         self.draw_popup()
-        sleep(2)
+        sleep(1)
         return
 
     def draw_popup(self):

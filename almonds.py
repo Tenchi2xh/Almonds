@@ -327,10 +327,7 @@ def capture(cb, params):
     params.log("Current scene captured!")
     params.log("(Used %d processes)" % multiprocessing.cpu_count())
 
-    try:
-        subprocess.call(["open", filename])
-    except OSError:
-        pass
+    open_file(filename)
 
 
 def cycle(cb, params, plane):
@@ -382,7 +379,9 @@ def main():
     with Cursebox() as cb:
 
         log = Logger()
-        log("$Welcome to Almonds %s$" % __version__)
+        log("Welcome to Almonds %s" % __version__)
+        log("Exit with $[ESC]$")
+        log("or $[CTRL]$ + $[C]$")
 
         params = Params(log)
         plane = Plane()
@@ -457,6 +456,8 @@ def main():
                         plane.reset()
                     except ValueError:
                         params.log("Given coordinates are not floating numbers")
+                else:
+                    params.log("Manual input canceled")
             # Zoom / un-zoom
             elif event == "Z":
                 zoom(params, 1.3)

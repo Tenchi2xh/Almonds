@@ -1,5 +1,10 @@
 # -*- encoding: utf-8 -*-
 
+import sys
+import os
+import subprocess
+
+
 splash = u"""                                                                             
                 ██                                                           
           ██  ██████  ██   .d8b.  db                              db         
@@ -60,3 +65,17 @@ def screen_resolution():
                 h = 1080
 
     return w, h
+
+
+def open_file(filename):
+    """
+    Multi-platform way to make the OS open a file with its default application
+    """
+    if sys.platform.startswith("darwin"):
+        subprocess.call(("open", filename))
+    elif sys.platform == "cygwin":
+        subprocess.call(("cygstart", filename))
+    elif os.name == "nt":
+        os.startfile(filename)
+    elif os.name == "posix":
+        subprocess.call(("xdg-open", filename))
