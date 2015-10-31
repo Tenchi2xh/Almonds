@@ -23,7 +23,7 @@ from .logger import *
 from .params import *
 from .utils import *
 
-__version__ = "1.20b"
+__version__ = "1.21b"
 
 MENU_WIDTH = 40
 
