@@ -1,4 +1,9 @@
 <p align="center"><img width="720" alt="logo" src="misc/logo/logo.png"></p>
+<p align="right">
+  <a href="https://www.codacy.com/app/Tenchi2xh/Almonds">
+    <img alt="Codacy" src="https://img.shields.io/codacy/3b8d442e099546ec838aa44a2f9a5d23.svg?style=flat-square">
+  </a>
+</p>
 
 ---
 
