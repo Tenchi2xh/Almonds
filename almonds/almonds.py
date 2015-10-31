@@ -219,8 +219,8 @@ def draw_menu(cb, params, qwertz):
     # Draw log
     draw_text(cb, x0, middle, "Event log".center(MENU_WIDTH - 2))
     latest_logs = params.log.get_latest(h - middle)
-    latest_logs = map(lambda l: textwrap.wrap(l, MENU_WIDTH - 4)[::-1], latest_logs)  # Wrap all messages
-    latest_logs = [l for ls in latest_logs for l in ls]                               # Flatten [[str]] -> [str]
+    latest_logs = [textwrap.wrap(l, MENU_WIDTH - 4)[::-1] for l in latest_logs]  # Wrap all messages
+    latest_logs = [l for ls in latest_logs for l in ls]                          # Flatten [[str]] -> [str]
     i = h - 2
     for l in latest_logs:
         draw_text(cb, x0 + 1, i, l)
