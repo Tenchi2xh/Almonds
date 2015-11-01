@@ -135,8 +135,10 @@ class Cursebox(object):
             return EVENT_RIGHT
         elif ch == 3:
             return EVENT_CTRL_C
-        else:
+        elif 0 >= ch < 256:
             return chr(ch)
+        else:
+            return EVENT_UNHANDLED
 
     def __enter__(self):
         os.environ["ESCDELAY"] = "25"        # Default delay when pressing ESC is 1000ms
