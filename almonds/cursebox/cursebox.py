@@ -67,6 +67,23 @@ class Cursebox(object):
                 # Ignore out of bounds error
                 pass
 
+    def put_arrow(self, x, y, direction, fg, bg):
+        ch = getattr(curses, "ACS_UARROW")
+        if direction == "down":
+            ch = getattr(curses, "ACS_DARROW")
+        if direction == "left":
+            ch = getattr(curses, "ACS_LARROW")
+        if direction == "right":
+            ch = getattr(curses, "ACS_RARROW")
+
+        if x < self.width and y < self.height:
+            try:
+                self.screen.addch(y, x, ch, self.pairs[fg, bg])
+            except curses.error:
+                # Ignore out of bounds error
+                pass
+
+
     @property
     def width(self):
         """

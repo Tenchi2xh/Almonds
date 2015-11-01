@@ -186,6 +186,12 @@ def draw_menu(cb, params, qwertz):
                 "$[" + symbols["ARROW_LEFT"] + "]$, $[" + symbols["ARROW_RIGHT"] + "]$")
     draw_option("Imaginary", "{0:.13g}".format(params.mb_cy),
                 "$[" + symbols["ARROW_UP"] + "]$, $[" + symbols["ARROW_DOWN"] + "]$")
+    # FIXME: try to find a way to avoid this hack
+    if is_native_windows():
+        cb.put_arrow(x0 + 30, 3, "up", colors.default_bg(), colors.default_fg())
+        cb.put_arrow(x0 + 35, 3, "down", colors.default_bg(), colors.default_fg())
+        cb.put_arrow(x0 + 30, 4, "left", colors.default_bg(), colors.default_fg())
+        cb.put_arrow(x0 + 35, 4, "right", colors.default_bg(), colors.default_fg())
     draw_option("Input coordinates...", "", "$[Enter]$")
     draw_option.counter += 1
     h_seps.append(draw_option.counter + 1)
