@@ -1,4 +1,4 @@
-<p align="center"><img width="720" alt="logo" src="misc/logo/logo.png"></p>
+<p align="center"><img width="720" alt="logo" src="misc/logo/logo_big.png"></p>
 <p align="right">
   <a href="https://pypi.python.org/pypi?:action=display&name=almonds">
     <img height=27 alt="PyPI" src="https://img.shields.io/pypi/v/almonds.svg">

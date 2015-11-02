@@ -4,11 +4,16 @@ from setuptools import setup, find_packages
 
 from almonds import __version__
 
+readme_file = open("readme_pypi.rst", "r")
+README = readme_file.read()
+readme_file.close()
+
 setup(
     name="almonds",
     packages=find_packages(),
     version=__version__,
     description="Terminal fractal viewer",
+    long_description=README,
     author="Tenchi",
     author_email="tenkage@gmail.com",
     url="https://github.com/Tenchi2xh/Almonds",
