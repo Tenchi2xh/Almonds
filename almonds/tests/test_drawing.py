@@ -24,7 +24,7 @@ def test_dither_symbol():
 def test_draw_box():
     cb = CurseBox(15, 5)
     draw_box(cb, 0, 0, cb.width, cb.height, v_seps=[7])
-    expected = dedent("""
+    expected = dedent(u"""
         ┌──────┬──────┐
         │      │      │
         │      │      │
@@ -53,7 +53,7 @@ def test_fill():
     cb = CurseBox(10, 5)
     draw_box(cb, 0, 0, 10, 5)
     fill(cb, 1, 1, 9, 3, "#")
-    expected = dedent("""
+    expected = dedent(u"""
         ┌────────┐
         │########│
         │########│
