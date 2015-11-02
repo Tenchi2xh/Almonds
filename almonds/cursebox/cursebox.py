@@ -135,7 +135,7 @@ class Cursebox(object):
             return EVENT_RIGHT
         elif ch == 3:
             return EVENT_CTRL_C
-        elif 0 >= ch < 256:
+        elif 0 <= ch < 256:
             return chr(ch)
         else:
             return EVENT_UNHANDLED
