@@ -41,7 +41,7 @@ class Logger(object):
         :param index: Index of desired message.
         :return: Desired message.
         """
-        self.log.__getitem__(index)
+        return self.log.__getitem__(index)
 
     def get_latest(self, n):
         """
