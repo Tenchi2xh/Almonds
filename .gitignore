@@ -10,6 +10,7 @@
 
 # Project specific
 *.params
+/.cache
 /saves
 /captures
 /build
