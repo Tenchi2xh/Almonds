@@ -71,3 +71,6 @@ def open_file(filename):
 def is_native_windows():
     return os.name == "nt" and sys.platform != "cygwin"
 
+
+def is_python3():
+    return sys.version_info[0] > 2

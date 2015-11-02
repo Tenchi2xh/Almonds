@@ -5,9 +5,9 @@ from __future__ import division
 import cmath
 import sys
 
-from .utils import clamp
+from .utils import *
 
-if sys.version_info.major > 2:
+if is_python3() > 2:
     xrange = range
 
 

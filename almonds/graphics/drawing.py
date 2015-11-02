@@ -8,9 +8,9 @@ import sys
 
 from ..cursebox import colors
 from ..cursebox import symbols
-from ..utils import is_native_windows
+from ..utils import *
 
-if sys.version_info.major > 2:
+if is_python3():
     xrange = range
 
 # Box drawing symbols

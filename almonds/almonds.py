@@ -27,7 +27,7 @@ __version__ = "1.21b"
 
 MENU_WIDTH = 40
 
-if sys.version_info.major > 2:
+if is_python3:
     xrange = range
 
 
@@ -261,7 +261,7 @@ def save(params):
     :param params: Current application parameters.
     :return:
     """
-    if sys.version_info.major > 2:
+    if is_python3():
         import pickle
         cPickle = pickle
     else:
@@ -401,7 +401,7 @@ def main(pool, ratio, qwertz, savefile):
         plane = Plane()
 
         def load(path):
-            if sys.version_info.major > 2:
+            if is_python3():
                 import pickle
                 cPickle = pickle
             else:
