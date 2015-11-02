@@ -1,13 +1,16 @@
 <p align="center"><img width="720" alt="logo" src="misc/logo/logo.png"></p>
 <p align="right">
+  <a href="https://pypi.python.org/pypi?:action=display&name=almonds">
+    <img height=27 alt="PyPI" src="https://img.shields.io/pypi/v/almonds.svg">
+  </a>
   <a href="https://www.codacy.com/app/Tenchi2xh/Almonds">
     <img height=27 alt="Codacy" src="https://img.shields.io/codacy/3b8d442e099546ec838aa44a2f9a5d23.svg">
   </a>
   <a href="https://travis-ci.org/Tenchi2xh/Almonds">
     <img height=27 alt="Travis-CI" src="https://img.shields.io/travis/Tenchi2xh/Almonds.svg">
   </a>
-  <a href="https://github.com/Tenchi2xh/Almonds/releases/tag/1.23b">
-    <img height=27 alt="Version" src="https://img.shields.io/badge/version-1.23b-blue.svg">
+  <a href="https://github.com/Tenchi2xh/Almonds/releases/tag/1.24b">
+    <img height=27 alt="Tag" src="https://img.shields.io/badge/tag-1.24b-blue.svg">
   </a>
 </p>
 
@@ -37,6 +40,26 @@
 - Infinite fun from the comfort of your terminal
 
 ### Running
+
+#### Using PIP
+
+Just run:
+
+```
+$ pip install almonds
+$ almonds
+```
+
+On non-Cygwin Windows, you will still have to install the unofficial `curses` module (see [From source](#from-source))
+
+#### From source
+
+Clone the repo:
+
+```
+$ git clone https://github.com/Tenchi2xh/Almonds.git
+$ cd Almonds
+```
 
 On OS X, Linux and Cygwin:
 

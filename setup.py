@@ -23,7 +23,7 @@ setup(
         'Programming Language :: Python :: 3.5'
     ],
     install_requires=["Pillow"],
-    extra_require={
+    extras_require={
         "test": ["pytest"]
     },
     entry_points={

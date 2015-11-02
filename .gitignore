@@ -8,6 +8,9 @@
 # Python
 *.pyc
 
+# Setuptools
+almonds.egg-info
+
 # Project specific
 *.params
 /.cache
