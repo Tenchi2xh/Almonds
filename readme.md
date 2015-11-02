@@ -9,8 +9,8 @@
   <a href="https://travis-ci.org/Tenchi2xh/Almonds">
     <img height=27 alt="Travis-CI" src="https://img.shields.io/travis/Tenchi2xh/Almonds.svg">
   </a>
-  <a href="https://github.com/Tenchi2xh/Almonds/releases/tag/1.24b">
-    <img height=27 alt="Tag" src="https://img.shields.io/badge/tag-1.24b-blue.svg">
+  <a href="https://github.com/Tenchi2xh/Almonds/releases/tag/1.25b">
+    <img height=27 alt="Tag" src="https://img.shields.io/badge/tag-1.25b-blue.svg">
   </a>
 </p>
 

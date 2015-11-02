@@ -22,7 +22,7 @@ def wrap_prolog(func, prolog):
 
 def launch():
     if os.name == "nt" and sys.platform != "cygwin":
-        __name__ == "__main__"
+        __name__ = "__main__"
 
     parser = argparse.ArgumentParser(description="version " + __version__, prog="almonds",
                                      formatter_class=lambda prog:
