@@ -1,13 +1,13 @@
 <p align="center"><img width="720" alt="logo" src="misc/logo/logo.png"></p>
 <p align="right">
   <a href="https://www.codacy.com/app/Tenchi2xh/Almonds">
-    <img alt="Codacy" src="https://img.shields.io/codacy/3b8d442e099546ec838aa44a2f9a5d23.svg?style=flat-square">
+    <img height=27 alt="Codacy" src="https://img.shields.io/codacy/3b8d442e099546ec838aa44a2f9a5d23.svg">
   </a>
   <a href="https://travis-ci.org/Tenchi2xh/Almonds">
-    <img alt="Travis-CI" src="https://img.shields.io/travis/Tenchi2xh/Almonds.svg?style=flat-square">
+    <img height=27 alt="Travis-CI" src="https://img.shields.io/travis/Tenchi2xh/Almonds.svg">
   </a>
   <a href="https://github.com/Tenchi2xh/Almonds/releases/tag/1.21b">
-    <img alt="Version" src="https://img.shields.io/badge/version-1.21b-blue.svg?style=flat-square">
+    <img height=27 alt="Version" src="https://img.shields.io/badge/version-1.21b-blue.svg">
   </a>
 </p>
 
