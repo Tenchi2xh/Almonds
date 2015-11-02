@@ -3,6 +3,8 @@
 from __future__ import print_function
 from __future__ import division
 
+import os
+import sys
 import multiprocessing
 import argparse
 
@@ -19,6 +21,9 @@ def wrap_prolog(func, prolog):
 
 
 def launch():
+    if os.name == "nt" and sys.platform != "cygwin":
+        __name__ == "__main__"
+
     parser = argparse.ArgumentParser(description="version " + __version__, prog="almonds",
                                      formatter_class=lambda prog:
                                      argparse.RawTextHelpFormatter(prog, max_help_position=45))
