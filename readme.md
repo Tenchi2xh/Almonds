@@ -65,7 +65,7 @@ On OS X, Linux and Cygwin:
 
 ```
 $ pip install Pillow
-$ python main.py
+$ python -m almonds.main
 ```
 
 (For Cygwin, [`mintty`](https://mintty.github.io/) or [`babun`](http://babun.github.io/) are recommended)
@@ -75,7 +75,7 @@ On Windows, download the `curses` module from the [Unofficial Windows Binaries f
 ```
 > pip install curses‑2.2‑cp27‑none‑win32.whl
 > pip install Pillow
-> python main.py
+> python -m almonds.main
 ```
 
 The font [Envy Code R](https://damieng.com/blog/2008/05/26/envy-code-r-preview-7-coding-font-released) is *highly* recommended. If your terminal emulator supports it, try to reduce the line spacing so that the box drawing characters touch. When using another font, the appearance of the fractal may seem squashed because the width to height ratio of the character are different; try to adjust it using the argument `--ratio` (see [Usage](#usage)).
