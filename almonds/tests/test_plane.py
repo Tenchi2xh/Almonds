@@ -2,6 +2,7 @@
 
 import pytest
 
+from ..utils import range
 from ..plane import Plane
 
 

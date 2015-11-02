@@ -153,3 +153,4 @@ Keys | Action
 - Separate options in two tabs ?
 - Press <kbd>SPACE</kbd> to hide log
 - New project idea: full-fledged python module for making `cursebox` UI applications
+- PyPI package

@@ -10,9 +10,6 @@ from ..cursebox import colors
 from ..cursebox import symbols
 from ..utils import *
 
-if is_python3():
-    xrange = range
-
 # Box drawing symbols
 
 BOX_CORNERS      = [symbols["BOX_TOP_LEFT"], symbols["BOX_TOP_RIGHT"],
@@ -150,7 +147,7 @@ def draw_box(cb, x0, y0, w, h, fg=colors.default_fg, bg=colors.default_bg, h_sep
     for s in h_seps + [0, h]:
         cb.put(x0 + 1, y0 + s, symbols["BOX_HORIZONTAL"] * (w - 1), fg, bg)
 
-    for y in xrange(1, h):
+    for y in range(1, h):
         for s in v_seps + [0, w]:
             cb.put(x0 + s, y0 + y, symbols["BOX_VERTICAL"], fg, bg)
 
@@ -183,7 +180,7 @@ def draw_scroll_bar(cb, x0, y0, h, n_visible, n_items, position, fg=colors.defau
     knob_position = int((h - knob_height) * position / n_items)
     knob_end = knob_position + knob_height
 
-    for y in xrange(h):
+    for y in range(h):
         symbol = u"█" if knob_position <= y <= knob_end else u"░"
         cb.put(x0, y0 + y, symbol, fg(), bg())
 
@@ -201,7 +198,7 @@ def draw_text(cb, x0, y0, string, fg=colors.default_fg, bg=colors.default_bg):
 
 
 def fill(cb, x0, y0, w, h, symbol, fg=colors.default_fg, bg=colors.default_bg):
-    for y in xrange(h):
+    for y in range(h):
         cb.put(x0, y0 + y, symbol * (w - 1), fg(), bg())
 
 

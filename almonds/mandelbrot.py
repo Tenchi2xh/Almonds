@@ -7,9 +7,6 @@ import sys
 
 from .utils import *
 
-if is_python3() > 2:
-    xrange = range
-
 
 def mandelbrot_iterate(c, max_iterations, julia_seed=None):
     """
@@ -23,7 +20,7 @@ def mandelbrot_iterate(c, max_iterations, julia_seed=None):
     z = c
     if julia_seed is not None:
         c = julia_seed
-    for iterations in xrange(max_iterations):
+    for iterations in range(max_iterations):
         z = z * z + c
         if abs(z) > 1000:
             return z, iterations

@@ -14,6 +14,8 @@ def clamp(n, lower, upper):
     :param upper: upper bound (inclusive)
     :return:      clamped number
     """
+    if lower > upper:
+        lower, upper = upper, lower
     return max(min(upper, n), lower)
 
 
@@ -74,3 +76,11 @@ def is_native_windows():
 
 def is_python3():
     return sys.version_info[0] > 2
+
+
+def range(*args, **kwargs):
+    if is_python3():
+        import builtins
+        return builtins.range(*args, **kwargs)
+    else:
+        return xrange(*args, **kwargs)

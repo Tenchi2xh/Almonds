@@ -4,9 +4,6 @@ import sys
 
 from .utils import *
 
-if is_python3():
-    xrange = range
-
 
 class Plane(object):
     """
@@ -37,8 +34,8 @@ class Plane(object):
         """
         minimum = 9223372036854775807
         maximum = 0
-        for y in xrange(y0, y0 + h):
-            for x in xrange(x0, x0 + w):
+        for y in range(y0, y0 + h):
+            for x in range(x0, x0 + w):
                 value = self[x, y]
                 if value != self.filler:
                     minimum = min(minimum, value)

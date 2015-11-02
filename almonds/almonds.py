@@ -27,9 +27,6 @@ __version__ = "1.21b"
 
 MENU_WIDTH = 40
 
-if is_python3:
-    xrange = range
-
 
 def compute(args):
     x, y, params = args
@@ -71,8 +68,8 @@ def draw_panel(cb, pool, params, plane):
     missing_coords = []
 
     # Check for coordinates that have no value in current plane
-    xs = xrange(params.plane_x0, params.plane_x0 + params.plane_w - 1)
-    ys = xrange(params.plane_y0, params.plane_y0 + params.plane_h - 1)
+    xs = range(params.plane_x0, params.plane_x0 + params.plane_w - 1)
+    ys = range(params.plane_y0, params.plane_y0 + params.plane_h - 1)
     for x in xs:
         for y in ys:
             if plane[x, y] is None:
@@ -302,7 +299,7 @@ def capture(cb, pool, params):
         palette = palette[::-1]
 
     # All coordinates to be computed as single arguments for processes
-    coords = [(x, y, w, h, params) for x in xrange(w) for y in xrange(h)]
+    coords = [(x, y, w, h, params) for x in range(w) for y in range(h)]
 
     results = []
     # Dispatch work to pool and draw results as they come in
@@ -359,7 +356,7 @@ def cycle(cb, pool, params, plane):
     step = params.max_iterations // 20
     if step == 0:
         step = 1
-    for i in xrange(0, params.max_iterations, step):
+    for i in range(0, params.max_iterations, step):
         params.palette_offset = i
         draw_panel(cb, pool, params, plane)
         cb.refresh()
