@@ -17,11 +17,11 @@ def wrap_prolog(func, prolog):
         func(*args, **kwargs)
     return wrapped
 
-if __name__ == "__main__":
 
+def launch():
     parser = argparse.ArgumentParser(description="version " + __version__, prog="almonds",
                                      formatter_class=lambda prog:
-                                         argparse.RawTextHelpFormatter(prog, max_help_position=45))
+                                     argparse.RawTextHelpFormatter(prog, max_help_position=45))
 
     parser.add_argument("save", nargs="?", type=str, default=None,
                         help="path of a save to load")
@@ -50,3 +50,7 @@ if __name__ == "__main__":
 
     pool = multiprocessing.Pool(args.processes)
     main(pool, ratio, args.qwertz, args.save)
+
+
+if __name__ == "__main__":
+    launch()
