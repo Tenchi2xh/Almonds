@@ -13,6 +13,7 @@ def get_version(relpath):
     if "__version__" in line:
       if '"' in line:
         return line.split('"')[1]
+VERSION = get_version("almonds/almonds.py")
 
 readme_file = open("readme_pypi.rst", "r")
 README = readme_file.read()
@@ -21,13 +22,13 @@ readme_file.close()
 setup(
     name="almonds",
     packages=find_packages(),
-    version=get_version("almonds/almonds.py"),
+    version=VERSION,
     description="Terminal fractal viewer",
     long_description=README,
     author="Tenchi",
     author_email="tenkage@gmail.com",
     url="https://github.com/Tenchi2xh/Almonds",
-    download_url="https://github.com/Tenchi2xh/Almonds/tarball/" + __version__,
+    download_url="https://github.com/Tenchi2xh/Almonds/tarball/" + VERSION,
     keywords=["fractal", "mandelbrot", "terminal", "termbox", "curses"],
     classifiers=[
         "Development Status :: 4 - Beta",
