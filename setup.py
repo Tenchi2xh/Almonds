@@ -5,6 +5,7 @@ from setuptools import setup, find_packages
 def get_version(relpath):
   """Read version info from a file without importing it"""
   from os.path import dirname, join
+  root = dirname(__file__)
   for line in open(join(root, relpath), "rb"):
     # encoding is not passed to open() parameter, because
     # it is incompatible with Python 2
